@@ -22,7 +22,7 @@
 
 ### Backend Setup:
 
-- If want to use your System's Global Python Environment then you can skip step 2 & 3 (Recommeded to make venv)
+- If you want to use your System's Global Python Environment then you can skip step 2 & 3 (Recommeded to make venv)
 2. **Create a Virtual Environment:**
    - In the `backend` folder, create a virtual environment with the following command:
      ```

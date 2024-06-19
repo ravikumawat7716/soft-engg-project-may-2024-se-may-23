@@ -1,4 +1,4 @@
-# AI powered LMS
+# AI Powered LMS
 
 ## Local Project Setup
 

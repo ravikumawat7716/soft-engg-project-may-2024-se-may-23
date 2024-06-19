@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import SigninView from "./views/SigninView.vue";
 import Layout from "./components/Layout.vue";
 import UserDashboardView from "./views/UserDashboardView.vue";
+import CourseView from "./views/CourseView.vue";
 
 const routes = [
   {
@@ -11,7 +12,7 @@ const routes = [
     path: "/",
     children: [
       {
-        path: "",
+        path: "/",
         name: "home",
         component: HomePage,
       },
@@ -19,6 +20,11 @@ const routes = [
         path: "/user-dashboard",
         name: "UserDashboard",
         component: UserDashboardView,
+      },
+      {
+        path: "/user-dashboard/course",
+        name: "coursePage",
+        component: CourseView,
       },
     ],
   },

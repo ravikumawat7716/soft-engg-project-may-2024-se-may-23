@@ -25,7 +25,7 @@
                         </div>
                     </div>
 
-                    <div class="chat-bot border-2 border-gray-400 rounded-md  w-[30%]">
+                    <div class="chat-bot border-2 border-gray-400 rounded-md h-[600px] w-[30%]">
                         Ai Chat Bot
                     </div>
                 </div>

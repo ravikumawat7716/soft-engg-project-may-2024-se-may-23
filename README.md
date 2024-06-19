@@ -68,9 +68,9 @@
 14. **Run the Application:**
     - Start the frontend application by running:
       ```
-      npm run serve
+      npm run dev
       ```
 
-You're now ready to use the application locally. Access it in your web browser at [http://localhost:8080/](http://localhost:8080/).
+You're now ready to use the application locally. Access it in your web browser at [http://localhost:5173/](http://localhost:5173/).
 
 Now you can start development process.

@@ -1,99 +1,58 @@
+# mongo_schema.py
+
 from pymongo import MongoClient
 from pymongo.errors import DuplicateKeyError
-from bson.objectid import ObjectId
 
 
 class MongoDBHandler:
     def __init__(self, uri: str, db_name: str):
         self.client = MongoClient(uri)
         self.db = self.client[db_name]
-        self.collection = self.db["StudentCluster"]
 
-    def create_student_cluster(self):
-        student_cluster_schema = {
-            "bsonType": "object",
-            "required": [
-                "name",
-                "email",
-                "roll_no",
-                "photo",
-                "login_logs",
-                "LLM_setting",
-            ],
-            "properties": {
-                "name": {"bsonType": "string", "description": "Name of the student"},
-                "email": {
-                    "bsonType": "string",
-                    "description": "Email address of the student",
-                },
-                "roll_no": {
-                    "bsonType": "string",
-                    "description": "Roll number of the student",
-                },
-                "photo": {
-                    "bsonType": "string",
-                    "description": "Photo URL or base64 string of the student",
-                },
-                "login_logs": {
-                    "bsonType": "array",
-                    "items": {
-                        "bsonType": "object",
-                        "properties": {
-                            "login_time": {
-                                "bsonType": "date",
-                                "description": "Timestamp of the login",
-                            },
-                            "logout_time": {
-                                "bsonType": "date",
-                                "description": "Timestamp of the logout",
-                            },
-                            "ip_address": {
-                                "bsonType": "string",
-                                "description": "IP address used for login",
-                            },
-                        },
-                        "required": ["login_time"],
-                    },
-                    "description": "Logs of student login activities",
-                },
-                "LLM_setting": {
-                    "bsonType": "object",
-                    "description": "Settings for the student's language model",
-                    "additionalProperties": True,
-                },
-            },
-        }
-
+    def create_collection(self, collection_name: str, schema: dict):
         # Check if the collection already exists
-        if "StudentCluster" not in self.db.list_collection_names():
+        if collection_name not in self.db.list_collection_names():
             self.db.create_collection(
-                "StudentCluster", validator={"$jsonSchema": student_cluster_schema}
+                collection_name, validator={"$jsonSchema": schema}
             )
-            print("Collection created with schema validation.")
+            print(f"Collection '{collection_name}' created with schema validation.")
         else:
-            print("Collection already exists.")
+            print(f"Collection '{collection_name}' already exists.")
 
-    def create_student(self, student_data: dict):
+    def insert_document(self, collection_name: str, document: dict):
+        collection = self.db[collection_name]
         try:
-            self.collection.insert_one(student_data)
-            print("Student created successfully.")
+            collection.insert_one(document)
+            print(f"Document inserted into '{collection_name}' collection.")
         except DuplicateKeyError:
-            print("Student with this email already exists.")
+            print("Document with the same key already exists.")
 
-    def get_student_by_email(self, email: str):
-        student = self.collection.find_one({"email": email})
-        if student:
-            return student
+    def get_document_by_field(self, collection_name: str, field_name: str, field_value):
+        collection = self.db[collection_name]
+        document = collection.find_one({field_name: field_value})
+        if document:
+            return document
         else:
-            print("Student not found.")
+            print(f"Document not found in '{collection_name}' collection.")
             return None
 
-    def update_student(self, email: str, update_data: dict):
-        result = self.collection.update_one({"email": email}, {"$set": update_data})
+    def update_document(
+        self, collection_name: str, field_name: str, field_value, update_data: dict
+    ):
+        collection = self.db[collection_name]
+        result = collection.update_one({field_name: field_value}, {"$set": update_data})
         if result.matched_count > 0:
-            print("Student updated successfully.")
+            print(f"Document in '{collection_name}' collection updated successfully.")
         else:
-            print("Student not found.")
+            print(f"Document not found in '{collection_name}' collection.")
+
+    def delete_document(self, collection_name: str, field_name: str, field_value):
+        collection = self.db[collection_name]
+        result = collection.delete_one({field_name: field_value})
+        if result.deleted_count > 0:
+            print(f"Document deleted from '{collection_name}' collection.")
+        else:
+            print(f"Document not found in '{collection_name}' collection.")
 
     def close_connection(self):
         self.client.close()

@@ -4,6 +4,10 @@ import SigninView from "./views/SigninView.vue";
 import Layout from "./components/Layout.vue";
 import UserDashboardView from "./views/UserDashboardView.vue";
 import CourseView from "./views/CourseView.vue";
+import CreateAssignment from "./views/CreateAssignment.vue";
+import CreateCourse from "./views/CreateCourse.vue";
+import LectureView from "./views/LectureView.vue";
+import AssignmentView from "./views/AssignmentView.vue";
 
 const routes = [
   {
@@ -22,9 +26,21 @@ const routes = [
         component: UserDashboardView,
       },
       {
-        path: "/user-dashboard/course",
+        path: "/user-dashboard/courseId",
         name: "coursePage",
         component: CourseView,
+        children: [
+          {
+            path: "/user-dashboard/courseId/lectureId",
+            name: "LectureView",
+            component: LectureView,
+          },
+          {
+            path: "/user-dashboard/courseId/assignments/assignmentId",
+            name: "AssignmentView",
+            component: AssignmentView,
+          },
+        ],
       },
     ],
   },

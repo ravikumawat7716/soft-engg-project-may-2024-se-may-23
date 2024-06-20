@@ -6,3 +6,7 @@ flask_restful
 
 # for mongodb database
 pymongo[srv]
+
+
+# for caption generator
+youtube-transcript-api

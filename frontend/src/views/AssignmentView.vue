@@ -17,7 +17,7 @@
       <div class="flex flex-col md:flex-row gap-3 w-full transition-all duration-500">
         <div :class="['video-div', isModalOpen ? 'w-[90%] md:w-[60%]' : 'w-full', 'flex flex-col gap-2', 'transition-all', 'duration-500']">
           <div class="w-full h-[400px] flex justify-center items-center">
-            <h1>Assignment Question Below</h1>
+            <h1>Assignment Questions are Here</h1>
           </div>
          
         </div>

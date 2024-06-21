@@ -14,7 +14,7 @@
         @click="toggleModal" 
         class="mb-4 px-4 py-2 text-[14px] bg-purple-500 text-white rounded-full transition-colors duration-300"
       >
-        Ai
+        Ai Support
       </button>
     </div>
 
@@ -35,7 +35,7 @@
           ></iframe>
         </div>
         <div class="transcript">
-          Video Transcript
+          <h1 class="font-semibold">Video Transcripts</h1>
         </div>
       </div>
 

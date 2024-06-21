@@ -2,11 +2,16 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./routers";
 import { OhVueIcon, addIcons } from "oh-vue-icons";
-import { FcGoogle, AiFigshare, FaArrowUp } from "oh-vue-icons/icons";
+import {
+  FcGoogle,
+  AiFigshare,
+  FaArrowUp,
+  AiSciHubSquare,
+} from "oh-vue-icons/icons";
 
 import "./styles/index.css";
 
-addIcons(FcGoogle, AiFigshare, FaArrowUp);
+addIcons(FcGoogle, AiFigshare, FaArrowUp, AiSciHubSquare);
 
 const app = createApp(App);
 

@@ -8,6 +8,7 @@ import CreateAssignment from "./views/CreateAssignment.vue";
 import CreateCourse from "./views/CreateCourse.vue";
 import LectureView from "./views/LectureView.vue";
 import AssignmentView from "./views/AssignmentView.vue";
+import GoogleLogin from "./components/GoogleLogin.vue";
 
 const routes = [
   {
@@ -19,6 +20,11 @@ const routes = [
         path: "/",
         name: "home",
         component: HomePage,
+      },
+      {
+        path: "/g",
+        name: "google",
+        component: GoogleLogin,
       },
       {
         path: "/user-dashboard",

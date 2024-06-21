@@ -3,7 +3,7 @@
         <h1>Assignment 1 Greaded</h1>
 
         <div class="flex gap-3 w-full ">
-            <div class="video w-[70%] border-r-2 border-gray-400 ">
+            <div class="video w-[70%]  ">
                 <div class="w-full h-full  ">
                     <h1 class="text-2xl">Assignment Questions Below</h1>
                 </div>

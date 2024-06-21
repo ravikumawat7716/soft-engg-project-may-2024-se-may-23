@@ -1,5 +1,5 @@
 <template>
-    <div class="h-14 border-b flex items-center justify-between px-[80px]">
+    <div class="sticky z-50 top-0 h-14 border-b flex items-center bg-gray-100 justify-between px-[10px] md:px-[80px]">
         <div class="flex gap-2">
             <div>Logo</div>
 

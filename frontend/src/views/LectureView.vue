@@ -1,7 +1,6 @@
 <template>
   <div class="h-full">
 
-
     <div class="flex mt-[32px] w-full justify-between ">
       <h1 class="font-semibold text-[18px]">Lecture1</h1>
 
@@ -41,7 +40,7 @@
       </div>
 
       <div 
-        :class="['chat-bot-div', isModalOpen ? 'w-[90%] h-[550px] md:w-[40%]' : 'hidden', 'border-2', 'border-gray-400', 'rounded-md', 'h-[600px]', 'flex', 'flex-col', 'transition-all', 'duration-500']"
+        :class="['chat-bot-div', isModalOpen ? 'w-[90%] h-[540px] md:w-[40%]' : 'hidden', 'border-2', 'border-gray-400', 'rounded-md', 'h-[600px]', 'flex', 'flex-col', 'transition-all', 'duration-500']"
       >
         <div class="flex-1 p-4 overflow-y-auto">
           <div v-if="messages.length > 0">
@@ -104,17 +103,16 @@ export default {
       if (this.newMessage.trim() !== '') {
         this.messages.push({ from: 'user', text: this.newMessage });
         this.newMessage = '';
-        // Simulate bot response
         setTimeout(() => {
           this.messages.push({ from: 'bot', text: 'This is a simulated response.' });
         }, 1000);
-        this.$nextTick(() => this.adjustTextareaHeight()); // Adjust textarea height after clearing message
+        this.$nextTick(() => this.adjustTextareaHeight()); 
       }
     },
     adjustTextareaHeight() {
       const textarea = this.$refs.textarea;
       textarea.style.height = 'auto';
-      textarea.style.height = `${Math.min(textarea.scrollHeight, 120)}px`; // Maximum 4 rows
+      textarea.style.height = `${Math.min(textarea.scrollHeight, 120)}px`; 
     }
   }
 };
@@ -122,7 +120,7 @@ export default {
 
 <style scoped>
 textarea {
-  max-height: 120px; /* Limit the height to approximately 4 rows */
+  max-height: 120px; 
 }
 .icon-large {
   font-size: 100px;

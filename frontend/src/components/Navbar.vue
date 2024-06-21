@@ -10,12 +10,12 @@
         <div class="flex items-center gap-10">
             <div class="user-info items-center flex gap-2">
                 <div class="image border-2 rounded-full p-2">
-                    Img
+                    <img class="w-[24px] h-[24px]" :src="logo" alt="Profile">
                 </div>
 
-                <div class="email flex flex-col">
-                    <h1>student</h1>
-                    lokeshkumar@mail.com
+                <div class="email flex flex-col gap-[1px]">
+                    <h1 class="text-[12px]">student</h1>
+                    <h1 class="text-[12px]">lokeshkumar@mail.com</h1>
                 </div>
             </div>
 
@@ -26,3 +26,15 @@
 
     </div>
 </template>
+
+<script>
+import logo from '../assets/vue.svg';
+
+export default {
+  data() {
+    return {
+      logo
+    }
+  }
+}
+</script>

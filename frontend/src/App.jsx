@@ -7,6 +7,7 @@ import UserDashboard from "./pages/UserDashboard";
 import Course from "./pages/Course";
 import Lecture from "./pages/Lacture";
 import Assignment from "./pages/Assignment";
+import ProgrammingAssignment from "./pages/ProgrammingAssignment";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -24,6 +25,7 @@ function App() {
                 path="assignments/:assignmentId"
                 element={<Assignment />}
               />
+              <Route path="pa/:pa_id" element={<ProgrammingAssignment />} />
             </Route>
           </Route>
           <Route path="/signin" element={<Login />} />

@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import UserDashboard from "./pages/UserDashboard";
+import Course from "./pages/Course";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -14,7 +15,11 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route path="/" element={<Home />} />
-            <Route path="/user-dashboard" element={<UserDashboard />}></Route>
+            <Route path="/user-dashboard" element={<UserDashboard />} />
+            <Route
+              path="/user-dashboard/courses/courseId"
+              element={<Course />}
+            ></Route>
           </Route>
           <Route path="/signin" element={<Login />} />
         </Routes>

@@ -209,7 +209,7 @@ const Course = () => {
         </div>
       </div>
 
-      <div className="rightBar w-[75%] md:w-[80%] h-full">
+      <div className="rightBar w-[75%] md:w-[80%] h-full overflow-y-auto scroll-smooth custom-scrollbar">
         <Outlet />
       </div>
     </div>

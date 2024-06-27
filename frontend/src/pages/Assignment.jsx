@@ -145,7 +145,7 @@ const Assignment = () => {
   };
 
   return (
-    <div className="h-full ml-2 ">
+    <div className="ml-2 ">
       <div className="flex mt-8 w-full justify-between">
         <h1 className="font-semibold text-lg">Assignment1</h1>
 
@@ -234,7 +234,7 @@ const Assignment = () => {
         <div
           className={`chat-bot-div ${
             isModalOpen ? "w-[90%] h-[540px] md:w-[40%]" : "hidden"
-          } border-2 border-gray-400 rounded-md h-[530px] flex flex-col transition-all duration-500`}
+          } border-2 border-gray-400 rounded-md h-[500px] flex flex-col transition-all duration-500`}
         >
           <div className="flex-1 p-4 overflow-y-auto">
             {messages.length > 0 ? (
@@ -255,8 +255,7 @@ const Assignment = () => {
               <div className="h-full w-full flex items-center justify-center">
                 <div className="flex flex-col gap-2">
                   <span className="text-center text-4xl">
-                    <i className="icon-large">🤖</i>{" "}
-                    {/* Replace with an actual icon if available */}
+                    <span className="icon-large">🤖</span>{" "}
                   </span>
                   <span>Hi User, I am AI. How can I help you?</span>
                 </div>

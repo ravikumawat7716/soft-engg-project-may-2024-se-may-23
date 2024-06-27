@@ -39,7 +39,7 @@ const ProgrammingAssignment = () => {
   };
 
   return (
-    <div className="h-full ml-6">
+    <div className=" ml-6">
       <div className="flex mt-4 w-full justify-between">
         <h1 className="font-semibold text-lg">PA 1</h1>
 
@@ -62,8 +62,8 @@ const ProgrammingAssignment = () => {
 
         <div
           className={`chat-bot-div ${
-            isModalOpen ? "w-[90%] h-[540px] md:w-[30%]" : "hidden"
-          } border-2 border-gray-400 rounded-md h-[530px] mt-14 flex flex-col transition-all duration-500`}
+            isModalOpen ? "w-[90%] h-[500px] md:w-[30%]" : "hidden"
+          } border-2 border-gray-400 rounded-md h-[500px] mt-14 flex flex-col transition-all duration-500`}
         >
           <div className="flex-1 p-4 overflow-y-auto">
             {messages.length > 0 ? (
@@ -84,8 +84,7 @@ const ProgrammingAssignment = () => {
               <div className="h-full w-full flex items-center justify-center">
                 <div className="flex flex-col gap-2">
                   <span className="text-center text-4xl">
-                    <i className="icon-large">🤖</i>{" "}
-                    {/* Replace with an actual icon if available */}
+                    <span className="icon-large">🤖</span>{" "}
                   </span>
                   <span>Hi User, I am AI. How can I help you?</span>
                 </div>

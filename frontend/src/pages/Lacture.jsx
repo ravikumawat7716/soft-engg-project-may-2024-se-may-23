@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useParams } from "react-router-dom";
+import { GiArtificialHive } from "react-icons/gi";
 
 const Lecture = () => {
   const { courseId, lectureId } = useParams();
@@ -38,7 +39,7 @@ const Lecture = () => {
   };
 
   return (
-    <div className="h-full ml-6">
+    <div className="ml-6">
       <div className="flex mt-4 w-full justify-between ">
         <h1 className="font-semibold text-lg">Lecture1</h1>
         <button className="mb-4 px-4 py-2 bg-red-700 text-white rounded-full text-sm transition-colors duration-300">
@@ -78,7 +79,7 @@ const Lecture = () => {
         <div
           className={`chat-bot-div ${
             isModalOpen ? "w-[90%] h-[500px] md:w-[40%]" : "hidden"
-          } border-2 border-gray-400 rounded-md h-[600px] flex flex-col transition-all duration-500`}
+          } border-2 border-gray-400 rounded-md h-[500px] flex flex-col transition-all duration-500`}
         >
           <div className="flex-1 p-4 overflow-y-auto">
             {messages.length > 0 ? (
@@ -99,7 +100,7 @@ const Lecture = () => {
               <div className="h-full w-full flex items-center justify-center">
                 <div className="flex flex-col gap-2">
                   <span className="text-center text-4xl">
-                    <i className="icon-large">🤖</i>{" "}
+                    <span className="icon-large">🤖</span>{" "}
                     {/* Replace with an actual icon if available */}
                   </span>
                   <span>Hi User, I am AI. How can I help you?</span>

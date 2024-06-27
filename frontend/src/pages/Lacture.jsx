@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { GiArtificialHive } from "react-icons/gi";
+import LLmSelect from "../components/LLMSelect";
 
 const Lecture = () => {
   const { courseId, lectureId } = useParams();
@@ -81,6 +82,7 @@ const Lecture = () => {
             isModalOpen ? "w-[90%] h-[500px] md:w-[40%]" : "hidden"
           } border-2 border-gray-400 rounded-md h-[500px] flex flex-col transition-all duration-500`}
         >
+          <LLmSelect />
           <div className="flex-1 p-4 overflow-y-auto">
             {messages.length > 0 ? (
               messages.map((message, index) => (

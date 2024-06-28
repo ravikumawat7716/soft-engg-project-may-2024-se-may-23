@@ -2,63 +2,86 @@
 
 student_schema = {
     "bsonType": "object",
-    "required": ["name", "email", "roll_no", "photo", "login_logs", "LLM_setting"],
+    "required": ["firstname", "lastname", "email", "roll_no", "profileURL"],
     "properties": {
-        "name": {"bsonType": "string", "description": "Name of the student"},
-        "email": {"bsonType": "string", "description": "Email address of the student"},
-        "roll_no": {"bsonType": "string", "description": "Roll number of the student"},
-        "photo": {
+        "firstname": {"bsonType": "string", "description": "First name of the user"},
+        "lastname": {"bsonType": "string", "description": "Last name of the user"},
+        "email": {"bsonType": "string", "description": "Email address of the user"},
+        "roll_no": {"bsonType": "string", "description": "Roll number of the user"},
+        "profileURL": {
             "bsonType": "string",
-            "description": "Photo URL or base64 string of the student",
+            "description": "Profile photo URL of the user",
         },
-        "login_logs": {
-            "bsonType": "array",
-            "items": {
-                "bsonType": "object",
-                "properties": {
-                    "login_time": {
-                        "bsonType": "date",
-                        "description": "Timestamp of the login",
-                    },
-                    "logout_time": {
-                        "bsonType": "date",
-                        "description": "Timestamp of the logout",
-                    },
-                    "ip_address": {
-                        "bsonType": "string",
-                        "description": "IP address used for login",
-                    },
-                },
-                "required": ["login_time"],
-            },
-            "description": "Logs of student login activities",
-        },
-        "LLM_setting": {
-            "bsonType": "object",
-            "description": "Settings for the student's language model",
-            "additionalProperties": True,
+        "role": {
+            "bsonType": "string",
+            "description": "Role of the user",
+            "default": "student",
         },
     },
 }
 
-teacher_schema = {
+course_schema = {
     "bsonType": "object",
-    "required": ["name", "email", "employee_id", "photo", "courses"],
+    "required": ["course_title", "course_description", "lectures", "assignments", "pa"],
     "properties": {
-        "name": {"bsonType": "string", "description": "Name of the teacher"},
-        "email": {"bsonType": "string", "description": "Email address of the teacher"},
-        "employee_id": {
+        "course_title": {"bsonType": "string", "description": "Title of the course"},
+        "course_description": {
             "bsonType": "string",
-            "description": "Employee ID of the teacher",
+            "description": "Description of the course",
         },
-        "photo": {
-            "bsonType": "string",
-            "description": "Photo URL or base64 string of the teacher",
-        },
-        "courses": {
+        "lectures": {
             "bsonType": "array",
-            "items": {"bsonType": "string"},
-            "description": "Courses taught by the teacher",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "lecture_id": {
+                        "bsonType": "string",
+                        "description": "ID of the lecture",
+                    },
+                    "lecture_title": {
+                        "bsonType": "string",
+                        "description": "Title of the lecture",
+                    },
+                },
+                "required": ["lecture_id", "lecture_title"],
+            },
+            "description": "List of lectures",
         },
+        "assignments": {
+            "bsonType": "array",
+            "items": {"bsonType": "string", "description": "ID of the assignment"},
+            "description": "List of assignment IDs",
+        },
+        "pa": {
+            "bsonType": "array",
+            "items": {"bsonType": "string", "description": "ID of the PA"},
+            "description": "List of PA IDs",
+        },
+    },
+}
+
+
+lecture_schema = {
+    "bsonType": "object",
+    "required": ["lecture_title", "youtube_id"],
+    "properties": {
+        "lecture_title": {"bsonType": "string", "description": "Title of the lecture"},
+        "youtube_id": {
+            "bsonType": "string",
+            "description": "YouTube ID of the lecture",
+        },
+    },
+}
+
+
+llm_log_schema = {
+    "bsonType": "object",
+    "required": ["student_id", "lecture_id", "llm_type", "query", "response"],
+    "properties": {
+        "student_id": {"bsonType": "string", "description": "ID of the student"},
+        "lecture_id": {"bsonType": "string", "description": "ID of the lecture"},
+        "llm_type": {"bsonType": "string", "description": "Type of the LLM used"},
+        "query": {"bsonType": "string", "description": "Query asked by the student"},
+        "response": {"bsonType": "string", "description": "Response given by the LLM"},
     },
 }

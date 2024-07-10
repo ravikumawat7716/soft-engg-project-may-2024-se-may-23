@@ -1,12 +1,12 @@
-from flask import Flask
-from flask_cors import CORS
+from utils.configuration import create_app
+from instances import app
 
-app = Flask(__name__)
-CORS(app)
 
-# Importing API routes
-from routes import *
+app = create_app()
 
+@app.route("/")
+def home():
+    return "<h1>Backend Server is Running....</h1>"
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -5,7 +5,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <div>
+    <div className="px-[80px] mt-4">
       <div
         className="bg-red-500 rounded-md w-[100px] px-4 py-2 cursor-pointer"
         onClick={() => navigate(`/user-dashboard`)}

@@ -4,6 +4,7 @@ from flask_cors import CORS
 from apis.login import UserLoginAPI
 from apis.summary import StudentSummaryAPI
 from apis.gen_ai import Gen_AI
+from apis.video_summary import Video_Summary
 
 
 def create_app():
@@ -14,6 +15,9 @@ def create_app():
 
     # Adding  the Gen AI
     api.add_resource(Gen_AI, "/gen_ai")
+
+    # Adding the Video Summary API
+    api.add_resource(Video_Summary, "/video_summary")
 
     api.init_app(app)
     return app

@@ -8,5 +8,9 @@ flask_restful
 pymongo[srv]
 
 
+# for llm
+ollama
+
+
 # for caption generator
 youtube-transcript-api

@@ -18,7 +18,7 @@ def create_app():
     api.add_resource(Gen_AI, "/gen_ai")
 
     # Adding the notes generator API
-    api.add_resource(NotesGenerator, "/notes_generator")
+    # api.add_resource(NotesGenerator, "/notes_generator")
 
     # Adding the Video Summary API
     api.add_resource(Video_Summary, "/video_summary")

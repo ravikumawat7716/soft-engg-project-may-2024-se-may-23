@@ -21,12 +21,9 @@ def ChatBot(chat, model="qwen2:0.5b"):
         print(chunk["message"]["content"], end="", flush=True)
 
 
-ChatBot([{"role": "user", "content": "Why is the sky blue?"}])
+# ChatBot([{"role": "user", "content": "Why is the sky blue?"}])
 
-chats = [
-    {"role": "user", "content": "Why is the sky blue?"},
-    {"role": "assistant", "content": "The sky is blue because of Rayleigh scattering."},
-]
-
-
-l
+# chats = [
+#     {"role": "user", "content": "Why is the sky blue?"},
+#     {"role": "assistant", "content": "The sky is blue because of Rayleigh scattering."},
+# ]

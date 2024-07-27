@@ -1,5 +1,3 @@
-# mongo_schema.py
-
 from pymongo import MongoClient
 from pymongo.errors import DuplicateKeyError
 

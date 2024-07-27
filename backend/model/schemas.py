@@ -1,5 +1,3 @@
-# schemas.py
-
 student_schema = {
     "bsonType": "object",
     "required": ["firstname", "lastname", "email", "roll_no", "profileURL"],
@@ -20,68 +18,28 @@ student_schema = {
     },
 }
 
-course_schema = {
-    "bsonType": "object",
-    "required": ["course_title", "course_description", "lectures", "assignments", "pa"],
-    "properties": {
-        "course_title": {"bsonType": "string", "description": "Title of the course"},
-        "course_description": {
-            "bsonType": "string",
-            "description": "Description of the course",
-        },
-        "lectures": {
-            "bsonType": "array",
-            "items": {
-                "bsonType": "object",
-                "properties": {
-                    "lecture_id": {
-                        "bsonType": "string",
-                        "description": "ID of the lecture",
-                    },
-                    "lecture_title": {
-                        "bsonType": "string",
-                        "description": "Title of the lecture",
-                    },
-                },
-                "required": ["lecture_id", "lecture_title"],
-            },
-            "description": "List of lectures",
-        },
-        "assignments": {
-            "bsonType": "array",
-            "items": {"bsonType": "string", "description": "ID of the assignment"},
-            "description": "List of assignment IDs",
-        },
-        "pa": {
-            "bsonType": "array",
-            "items": {"bsonType": "string", "description": "ID of the PA"},
-            "description": "List of PA IDs",
-        },
-    },
-}
-
-
-lecture_schema = {
-    "bsonType": "object",
-    "required": ["lecture_title", "youtube_id"],
-    "properties": {
-        "lecture_title": {"bsonType": "string", "description": "Title of the lecture"},
-        "youtube_id": {
-            "bsonType": "string",
-            "description": "YouTube ID of the lecture",
-        },
-    },
-}
-
 
 llm_log_schema = {
     "bsonType": "object",
-    "required": ["student_id", "lecture_id", "llm_type", "query", "response"],
+    "required": [
+        "email",
+        "model",
+        "prompt",
+        "prompt_data",
+        "response",
+        "method",
+        "timestamp",
+    ],
     "properties": {
-        "student_id": {"bsonType": "string", "description": "ID of the student"},
-        "lecture_id": {"bsonType": "string", "description": "ID of the lecture"},
-        "llm_type": {"bsonType": "string", "description": "Type of the LLM used"},
-        "query": {"bsonType": "string", "description": "Query asked by the student"},
+        "email": {"bsonType": "string", "description": "ID of the student"},
+        "model": {"bsonType": "string", "description": "Type of the LLM used"},
+        "prompt": {"bsonType": "string", "description": "Prompt given to the LLM"},
+        "prompt_data": {"bsonType": "string", "description": "Data given to the LLM"},
         "response": {"bsonType": "string", "description": "Response given by the LLM"},
+        "method": {
+            "bsonType": "string",
+            "description": "Method used to generate the response",
+        },
+        "timestamp": {"bsonType": "date", "description": "Timestamp of the log"},
     },
 }

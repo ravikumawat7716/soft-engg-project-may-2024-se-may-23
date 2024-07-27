@@ -1,53 +1,80 @@
-from flask import request
-from instances import api
+from flask import request, jsonify
 from flask_restful import Resource
-import requests
+import jwt
+from datetime import datetime, timedelta
+from model.connection import mongo_handler
+from instances import app
 
 class UserLoginAPI(Resource):
     def post(self):
-        data = request.get_json()
-        if data.get('gcode'):
-            authorization_code = data['gcode']
-            print(authorization_code)
+        data = request.json
+        email = data.get('email')
 
-            token_url = "https://oauth2.googleapis.com/token"
-            client_id = "1043737632690-hogp7qi303vimd5tflakfhvduodkfjjh.apps.googleusercontent.com ==> change this"
-            client_secret = "GSas;hfOCSPX-uO5ywo7h-nxZXOfB0OSSaZzJVj5X ===>change this"
-            redirect_uri = "http://127.0.0.1:5000/"
+        if not email:
+            return {"error": "Email is required"}, 400
 
-            payload = {
-                "code": authorization_code,
-                "client_id": client_id,
-                "client_secret": client_secret,
-                "redirect_uri": redirect_uri,
-                "grant_type": "authorization_code",
+        existing_user = mongo_handler.get_document_by_field("StudentCluster", "email", email)
+
+        if existing_user:
+            token = jwt.encode(
+                {
+                    "id": str(existing_user["_id"]),
+                    "role": existing_user.get("role", "student"),
+                    "exp": datetime.utcnow() + timedelta(days=90)
+                },
+                "SECRET_KEY",
+                algorithm="HS256"
+            )
+            return {
+                "_id": str(existing_user["_id"]),
+                "name": existing_user.get("name", ""),
+                "email": existing_user.get("email", ""),
+                "roll_no": existing_user.get("roll_no", ""),
+                "profileURL": existing_user.get("photo", ""),
+                "role": existing_user.get("role", "student"),
+                "token": token
+            }, 200
+        else:
+            required_fields = ["name", "email", "roll_no", "photo"]
+            for field in required_fields:
+                if field not in data:
+                    return {"error": f"{field} is required"}, 400
+
+            user_data = {
+                "name": data["name"],
+                "email": data["email"],
+                "roll_no": data["roll_no"],
+                "photo": data["photo"],
+                "login_logs": [],
+                "LLM_setting": {},
+                "role": "student",
             }
+            new_user_id = mongo_handler.insert_document("StudentCluster", user_data)
 
-            try:
-                # Send a POST request to exchange the authorization code for an access token
-                response = requests.post(token_url, data=payload)
-                response_data = response.json()
-                print("Google OAuth Response:", response_data)
+            if not new_user_id:
+                return {"error": "Failed to insert new user"}, 500
 
-                # Fetch user details using the access token
-                access_token = response_data.get("access_token", "")
-                print(access_token)
-                user_info_url = "https://www.googleapis.com/oauth2/v3/userinfo"
-                user_response = requests.get(
-                    user_info_url, headers={"Authorization": f"Bearer {access_token}"}
-                )
-                user_data = user_response.json()
-                print("User data---------------------")
-                print(user_data)
+            new_user = mongo_handler.get_document_by_field("StudentCluster", "_id", new_user_id)
 
-                # Assuming 'name' and 'role' are retrieved from user_data
-                name = user_data.get('name', '')
-                role = user_data.get('role', '')
+            if not new_user:
+                return {"error": "Failed to retrieve new user"}, 500
 
-                return {'access_token': access_token, 'username': name, 'userrole': role}, 200
-            except Exception as e:
-                print(f"Error: {e}")
-                return {'message': 'Incorrect Credentials'}, 401
-        return {'message': 'Bad Request'}, 400
+            token = jwt.encode(
+                {
+                    "id": str(new_user["_id"]),
+                    "role": new_user.get("role", "student"),
+                    "exp": datetime.utcnow() + timedelta(days=90)
+                },
+                "SECRET_KEY",
+                algorithm="HS256"
+            )
 
-# api.add_resource(UserLoginAPI, '/login')
+            return {
+                "_id": str(new_user["_id"]),
+                "name": new_user.get("name", ""),
+                "email": new_user.get("email", ""),
+                "roll_no": new_user.get("roll_no", ""),
+                "profileURL": new_user.get("photo", ""),
+                "role": new_user.get("role", "student"),
+                "token": token
+            }, 201

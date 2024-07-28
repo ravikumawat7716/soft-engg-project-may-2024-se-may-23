@@ -99,3 +99,44 @@ course_schema = {
         "updatedAt": {"bsonType": "date", "description": "Last update date of the course"}
     }
 }
+
+chatbot_log_schema = {
+    "bsonType": "object",
+    "required": [
+        "email",
+        "timestamp",
+        "chat",
+    ],
+    "properties": {
+        "email": {
+            "bsonType": "string",
+            "description": "Unique identifier for the user (email)",
+        },
+        "timestamp": {
+            "bsonType": "date",
+            "description": "Timestamp when the chat session started",
+        },
+        "chat": {
+            "bsonType": "array",
+            "description": "List of chat messages",
+            "items": {
+                "bsonType": "object",
+                "required": ["timestamp", "sender", "message"],
+                "properties": {
+                    "timestamp": {
+                        "bsonType": "date",
+                        "description": "Timestamp of the interaction",
+                    },
+                    "sender": {
+                        "bsonType": "string",
+                        "description": "Sender of the message (user or bot)",
+                    },
+                    "message": {
+                        "bsonType": "string",
+                        "description": "Content of the message",
+                    },
+                },
+            },
+        },
+    },
+}

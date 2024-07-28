@@ -1,5 +1,5 @@
 from model.mongo_utility import MongoDBHandler
-from model.schemas import student_schema, llm_log_schema , course_schema
+from model.schemas import student_schema, llm_log_schema , course_schema, chatbot_log_schema
 
 
 # def mongoDB():
@@ -17,6 +17,7 @@ def create_collection():
     mongo_handler.create_collection("StudentCluster", student_schema)
     mongo_handler.create_collection("LLMLogsCluster", llm_log_schema)
     mongo_handler.create_collection("CourseCluster", course_schema)
+    mongo_handler.create_collection("Chatbotlogs", chatbot_log_schema)
 
 
 # return mongo_handler

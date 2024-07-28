@@ -2,10 +2,9 @@ from instances.app import app
 from instances.api import api
 from flask_cors import CORS
 from apis.login import UserLoginAPI
-from apis.summary import StudentSummaryAPI
-from apis.gen_ai import Gen_AI
-from apis.video_summary import Video_Summary
-from apis.notes_generator import NotesGenerator
+from apis.gen_ai.video_summary import Video_Summary
+from apis.gen_ai.notes_generator import NotesGenerator
+from apis.gen_ai.code_explanation import CodeExplantion
 from model.connection import create_collection
 
 
@@ -15,19 +14,12 @@ def create_app():
     create_collection()
 
     api.add_resource(UserLoginAPI, "/login")
-    api.add_resource(StudentSummaryAPI, "/student_summary")
 
-    # Adding  the Gen AI
-    api.add_resource(Gen_AI, "/gen_ai")
-
-    # Adding the notes generator API
-    api.add_resource(NotesGenerator, "/notes_generator")
-
-    # Adding the Video Summary API
-    api.add_resource(Video_Summary, "/video_summary")
-
-    # AI chatbot
-    # api.add_resource(ChatBot, "/chatbot")
+    # Gen AI APIs
+    api.add_resource(Video_Summary, "/video_summary")  # Video Summary API
+    api.add_resource(CodeExplantion, "/code_explanation")  # Code Explanation API
+    api.add_resource(NotesGenerator, "/notes_generator")  # Notes Generator API
+    # api.add_resource(ChatBot, "/chatbot") # under construction
 
     api.init_app(app)
     return app

@@ -19,7 +19,7 @@ def generate(method, prompt, prompt_data, email):
     log = {
         "email": email,
         "model": model,
-        "prompt": prompt_query,
+        "prompt": prompt,
         "prompt_data": prompt_data,
         "response": result["response"],
         "method": method,

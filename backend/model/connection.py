@@ -22,28 +22,25 @@ def create_collection():
 # return mongo_handler
 
 # Example student data
-new_student = {
-    "name": "John Doe",
-    "email": "john.doe@example.com",
-    "roll_no": "12345",
-    "photo": "http://example.com/photo.jpg",
-    "login_logs": [],
-    "LLM_setting": {},
-}
+# new_student = {
+#     "name": "John Doe",
+#     "email": "john.doe@example.com",
+#     "roll_no": "12345",
+#     "photo": "http://example.com/photo.jpg",
+#     "login_logs": [],
+#     "LLM_setting": {},
+# }
 
-# CRUD operations for StudentCluster
-mongo_handler.insert_document("StudentCluster", new_student)
-student = mongo_handler.get_document_by_field(
-    "StudentCluster", "email", "john.doe@example.com"
-)
-if student:
-    print("Student retrieved:", student)
-update_data_student = {"name": "Johnathan Doe"}
-mongo_handler.update_document(
-    "StudentCluster", "email", "john.doe@example.com", update_data_student
-)
+# # CRUD operations for StudentCluster
+# mongo_handler.insert_document("StudentCluster", new_student)
+# student = mongo_handler.get_document_by_field(
+#     "StudentCluster", "email", "john.doe@example.com"
+# )
+# if student:
+#     print("Student retrieved:", student)
+# update_data_student = {"name": "Johnathan Doe"}
+# mongo_handler.update_document(
+#     "StudentCluster", "email", "john.doe@example.com", update_data_student
+# )
 
-mongo_handler.delete_document("StudentCluster", "email", "john.doe@example.com")
-
-# Close the MongoDB connection when done
-# mongo_handler.close_connection()
+# mongo_handler.delete_document("StudentCluster", "email", "john.doe@example.com")

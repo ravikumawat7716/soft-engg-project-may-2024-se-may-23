@@ -9,6 +9,9 @@ import Lecture from "./pages/Lacture";
 import Assignment from "./pages/Assignment";
 import ProgrammingAssignment from "./pages/ProgrammingAssignment";
 import CourseIntro from "./pages/CourseIntro";
+import CreateCourse from "./pages/CreateCourse";
+import AddLecture from "./pages/AddLecture";
+import CreateAssignment from "./pages/CreateAssignment";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -19,6 +22,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route path="/" element={<Home />} />
+            <Route path="/create-course" element={<CreateCourse />} />
+            <Route path="/create-lecture" element={<AddLecture />} />
+            <Route path="/create-assignment" element={<CreateAssignment />} />
             <Route path="/user-dashboard" element={<UserDashboard />} />
             <Route path="/user-dashboard/courses/courseId" element={<Course />}>
               <Route path="" element={<CourseIntro />} />

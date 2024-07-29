@@ -2,6 +2,9 @@ from instances.app import app
 from instances.api import api
 from flask_cors import CORS
 from apis.login import UserLoginAPI
+from apis.assignments import CreateAssignmentAPI
+from apis.assignments import GetCourseAssignmentsAPI
+from apis.assignments import GetAssignmentAPI
 from apis.gen_ai.video_summary import Video_Summary
 from apis.gen_ai.notes_generator import NotesGenerator
 from apis.gen_ai.code_explanation import CodeExplantion
@@ -15,6 +18,11 @@ def create_app():
     create_collection()  # Create collections in the database
 
     api.add_resource(UserLoginAPI, "/login")
+
+    # Assignment APIs
+    api.add_resource(CreateAssignmentAPI, "/create_assignment")
+    api.add_resource(GetCourseAssignmentsAPI, "/get_course_assignments/<string:courseId>")
+    api.add_resource(GetAssignmentAPI, "/get_assignment/<string:courseId>/<string:assignmentId>")
 
     # Gen AI APIs
     api.add_resource(Video_Summary, "/video_summary")  # Video Summary API

@@ -43,7 +43,7 @@ class Video_Summary(Resource):
             summary = generate(
                 prompt=prompt,
                 prompt_data=prompt_data,
-                method="notes_generator",
+                method="video_summary",
                 email=email,
             )
 

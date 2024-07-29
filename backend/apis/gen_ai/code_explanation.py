@@ -27,4 +27,4 @@ class CodeExplantion(Resource):
             return jsonify({"error": str(e)}), 500
 
     def get(self):
-        return jsonify({"message": "Welcome to the Gen AI API!"})
+        return jsonify({"message": "Welcome to the Code Explantion API!"})

@@ -20,8 +20,11 @@ class MongoDBHandler:
     def insert_document(self, collection_name: str, document: dict):
         collection = self.db[collection_name]
         try:
-            collection.insert_one(document)
+            result = collection.insert_one(document)
             print(f"Document inserted into '{collection_name}' collection.")
+
+            return result.inserted_id
+
         except DuplicateKeyError:
             print("Document with the same key already exists.")
 

@@ -50,7 +50,10 @@ course_schema = {
     "required": ["title", "description"],
     "properties": {
         "title": {"bsonType": "string", "description": "Title of the course"},
-        "description": {"bsonType": "string", "description": "Description of the course"},
+        "description": {
+            "bsonType": "string",
+            "description": "Description of the course",
+        },
         "lectures": {
             "bsonType": "array",
             "description": "List of lectures in the course",
@@ -58,12 +61,24 @@ course_schema = {
                 "bsonType": "object",
                 "required": ["title", "youtubeId"],
                 "properties": {
-                    "title": {"bsonType": "string", "description": "Title of the lecture"},
-                    "youtubeId": {"bsonType": "string", "description": "YouTube ID of the lecture"},
-                    "createdAt": {"bsonType": "date", "description": "Creation date of the lecture"},
-                    "updatedAt": {"bsonType": "date", "description": "Last update date of the lecture"}
-                }
-            }
+                    "title": {
+                        "bsonType": "string",
+                        "description": "Title of the lecture",
+                    },
+                    "youtubeId": {
+                        "bsonType": "string",
+                        "description": "YouTube ID of the lecture",
+                    },
+                    "createdAt": {
+                        "bsonType": "date",
+                        "description": "Creation date of the lecture",
+                    },
+                    "updatedAt": {
+                        "bsonType": "date",
+                        "description": "Last update date of the lecture",
+                    },
+                },
+            },
         },
         "assignments": {
             "bsonType": "array",
@@ -72,13 +87,28 @@ course_schema = {
                 "bsonType": "object",
                 "required": ["title", "description", "dueDate"],
                 "properties": {
-                    "title": {"bsonType": "string", "description": "Title of the assignment"},
-                    "description": {"bsonType": "string", "description": "Description of the assignment"},
-                    "dueDate": {"bsonType": "date", "description": "Due date of the assignment"},
-                    "createdAt": {"bsonType": "date", "description": "Creation date of the assignment"},
-                    "updatedAt": {"bsonType": "date", "description": "Last update date of the assignment"}
-                }
-            }
+                    "title": {
+                        "bsonType": "string",
+                        "description": "Title of the assignment",
+                    },
+                    "description": {
+                        "bsonType": "string",
+                        "description": "Description of the assignment",
+                    },
+                    "dueDate": {
+                        "bsonType": "date",
+                        "description": "Due date of the assignment",
+                    },
+                    "createdAt": {
+                        "bsonType": "date",
+                        "description": "Creation date of the assignment",
+                    },
+                    "updatedAt": {
+                        "bsonType": "date",
+                        "description": "Last update date of the assignment",
+                    },
+                },
+            },
         },
         "programmingAssignments": {
             "bsonType": "array",
@@ -87,17 +117,35 @@ course_schema = {
                 "bsonType": "object",
                 "required": ["title", "description", "dueDate"],
                 "properties": {
-                    "title": {"bsonType": "string", "description": "Title of the programming assignment"},
-                    "description": {"bsonType": "string", "description": "Description of the programming assignment"},
-                    "dueDate": {"bsonType": "date", "description": "Due date of the programming assignment"},
-                    "createdAt": {"bsonType": "date", "description": "Creation date of the programming assignment"},
-                    "updatedAt": {"bsonType": "date", "description": "Last update date of the programming assignment"}
-                }
-            }
+                    "title": {
+                        "bsonType": "string",
+                        "description": "Title of the programming assignment",
+                    },
+                    "description": {
+                        "bsonType": "string",
+                        "description": "Description of the programming assignment",
+                    },
+                    "dueDate": {
+                        "bsonType": "date",
+                        "description": "Due date of the programming assignment",
+                    },
+                    "createdAt": {
+                        "bsonType": "date",
+                        "description": "Creation date of the programming assignment",
+                    },
+                    "updatedAt": {
+                        "bsonType": "date",
+                        "description": "Last update date of the programming assignment",
+                    },
+                },
+            },
         },
         "createdAt": {"bsonType": "date", "description": "Creation date of the course"},
-        "updatedAt": {"bsonType": "date", "description": "Last update date of the course"}
-    }
+        "updatedAt": {
+            "bsonType": "date",
+            "description": "Last update date of the course",
+        },
+    },
 }
 
 chatbot_log_schema = {
@@ -106,6 +154,7 @@ chatbot_log_schema = {
         "email",
         "timestamp",
         "chat",
+        "model",
     ],
     "properties": {
         "email": {
@@ -113,7 +162,7 @@ chatbot_log_schema = {
             "description": "Unique identifier for the user (email)",
         },
         "timestamp": {
-            "bsonType": "date",
+            "bsonType": "string",
             "description": "Timestamp when the chat session started",
         },
         "chat": {
@@ -121,22 +170,26 @@ chatbot_log_schema = {
             "description": "List of chat messages",
             "items": {
                 "bsonType": "object",
-                "required": ["timestamp", "sender", "message"],
+                "required": ["timestamp", "role", "content"],
                 "properties": {
                     "timestamp": {
-                        "bsonType": "date",
+                        "bsonType": "string",
                         "description": "Timestamp of the interaction",
                     },
-                    "sender": {
+                    "role": {
                         "bsonType": "string",
                         "description": "Sender of the message (user or bot)",
                     },
-                    "message": {
+                    "content": {
                         "bsonType": "string",
                         "description": "Content of the message",
                     },
                 },
             },
+        },
+        "model": {
+            "bsonType": "string",
+            "description": "Model used for the chat session",
         },
     },
 }

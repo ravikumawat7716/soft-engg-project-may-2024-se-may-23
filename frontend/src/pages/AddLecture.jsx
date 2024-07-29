@@ -40,9 +40,9 @@ const AddLecture = () => {
     console.log(data);
 
     try {
-      const response = await axios.post(`${ApiUrl}/lectures/create`, data);
-      console.log(response.data);
-      navigate("/");
+      //   const response = await axios.post(`${ApiUrl}/lectures/create`, data);
+      //   console.log(response.data);
+      //   navigate("/");
     } catch (error) {
       console.error(error);
     }

@@ -36,6 +36,14 @@ class MongoDBHandler:
         else:
             print(f"Document not found in '{collection_name}' collection.")
             return None
+        
+    def get_all_documents(self, collection_name: str):
+        collection = self.db[collection_name]
+        documents = list(collection.find())
+        if documents:
+            return documents
+        else:
+            return []
 
     def update_document(
         self, collection_name: str, field_name: str, field_value, update_data: dict

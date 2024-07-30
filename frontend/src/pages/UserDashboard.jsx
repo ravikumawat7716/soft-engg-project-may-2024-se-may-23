@@ -1,10 +1,12 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { FaCertificate } from "react-icons/fa";
 import { FaArrowTrendUp } from "react-icons/fa6";
 import { FiActivity } from "react-icons/fi";
 import { HiAcademicCap } from "react-icons/hi";
 import { MdDashboard } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { ApiUrl } from "../config";
 
 const features = [
   "My Courses",
@@ -13,10 +15,23 @@ const features = [
   "Performances",
 ];
 
-const courses = ["Software Engineering", "Software Testing", "Deep Learning"];
-
 const UserDashboard = () => {
   const navigate = useNavigate();
+
+  const [courses, setCourses] = useState(null);
+
+  const getCourses = async () => {
+    const res = await axios({
+      url: `${ApiUrl}/courses`,
+    });
+
+    console.log(res.data);
+    setCourses(res.data);
+  };
+
+  useEffect(() => {
+    getCourses();
+  }, []);
 
   return (
     <div className="flex h-full px-[10px] md:px-[80px]">
@@ -63,15 +78,18 @@ const UserDashboard = () => {
         <div className="flex flex-col gap-5 mt-10 ml-[80px] ">
           <h1 className="font-semibold">My Courses</h1>
           <div className="flex flex-wrap gap-8">
-            {courses.map((course, index) => (
-              <div
-                onClick={() => navigate(`/user-dashboard/courses/courseId`)}
-                key={index}
-                className="border border-gray-400 rounded-xl flex items-center justify-center h-[200px] w-[200px] bg-red-700"
-              >
-                <h1 className="text-white">{course}</h1>
-              </div>
-            ))}
+            {courses &&
+              courses.map((course, index) => (
+                <div
+                  onClick={() =>
+                    navigate(`/user-dashboard/courses/${course._id}`)
+                  }
+                  key={index}
+                  className="border border-gray-400 rounded-xl flex items-center justify-center h-[200px] w-[200px] bg-red-700"
+                >
+                  <h1 className="text-white">{course.title}</h1>
+                </div>
+              ))}
           </div>
         </div>
       </div>

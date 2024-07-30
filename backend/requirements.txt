@@ -2,6 +2,7 @@
 flask
 flask_cors
 flask_restful
+flask_jwt_extended
 
 
 # for mongodb database

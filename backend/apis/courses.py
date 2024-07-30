@@ -48,12 +48,28 @@ class Course(Resource):
 class AllCourses(Resource):
     def get(self):
         courses = mongo_handler.get_all_documents("CourseCluster")
+        for course in courses:
+            course["_id"] = str(course["_id"])
         return jsonify(dumps(courses))
 
 class CourseById(Resource):
-    def get(self, course_id):
-        course = mongo_handler.get_document_by_field("CourseCluster", "_id", course_id)
-        print(course)
+    def get(self):
+        data = request.get_json()
+        course_id = data.get('course_id')
+        print(course_id)
+        
+        if not course_id:
+            return {"message": "Course ID is required"}, 400
+
+        try:
+            course = mongo_handler.get_document_by_field("CourseCluster", "_id", ObjectId(course_id))
+            course["_id"] = str(course["_id"])
+            print(course)
+
+            # course = mongo_handler.get_document_by_field("CourseCluster", "_id", course_id)
+        except Exception as e:
+            return {"message": "Invalid course ID format"}, 400
+        
         if course:
             return jsonify(dumps(course))
         return {"message": "Course not found"}, 404

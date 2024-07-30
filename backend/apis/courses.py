@@ -53,9 +53,9 @@ class AllCourses(Resource):
         return jsonify(courses)
 
 class CourseById(Resource):
-    def get(self):
-        data = request.get_json()
-        course_id = data.get('course_id')
+    def get(self, course_id):
+        # data = request.get_json()
+        # course_id = data.get('course_id')
         print(course_id)
         
         if not course_id:

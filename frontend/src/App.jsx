@@ -28,7 +28,10 @@ function App() {
             <Route path="/create-assignment" element={<CreateAssignment />} />
             <Route path="/create-pa" element={<CreatePA />} />
             <Route path="/user-dashboard" element={<UserDashboard />} />
-            <Route path="/user-dashboard/courses/courseId" element={<Course />}>
+            <Route
+              path="/user-dashboard/courses/:courseId"
+              element={<Course />}
+            >
               <Route path="" element={<CourseIntro />} />
               <Route path="lectures/:lectureId" element={<Lecture />} />
               <Route

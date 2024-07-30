@@ -38,7 +38,7 @@ const CreateAssignment = () => {
   useEffect(() => {
     const getCourses = async () => {
       const res = await axios({
-        url: `${ApiUrl}/courses/all`,
+        url: `${ApiUrl}/courses`,
       });
       setCourses(res.data);
     };
@@ -64,12 +64,12 @@ const CreateAssignment = () => {
 
     console.log(convertedData);
     try {
-      //   const response = await axios.post(
-      //     `${ApiUrl}/assignments/create`,
-      //     convertedData
-      //   );
-      //   console.log(response.data);
-      //   navigate("/");
+      // const response = await axios.post(
+      //   `${ApiUrl}/assignments/create`,
+      //   convertedData
+      // );
+      // console.log(response.data);
+      // navigate("/");
     } catch (error) {
       console.error(error);
     }

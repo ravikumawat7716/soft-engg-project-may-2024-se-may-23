@@ -1,34 +1,50 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaArrowLeft, FaArrowRight, FaBars, FaVideo } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { HiMiniComputerDesktop } from "react-icons/hi2";
 import { ImCross } from "react-icons/im";
 import { MdAssignment } from "react-icons/md";
-import { Outlet, useNavigate } from "react-router-dom";
-
-const lectures = ["Lists", "Dictionary", "Tuples", "Recursion"];
-
-const assignments = ["Assignment 1", "Assignment 2", "Assignment 3"];
+import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import { ApiUrl } from "../config";
 
 const progAssignments = ["PA 1", "PA 2", "PA 3"];
 
 const Course = () => {
   const [isSliderOpen, setIsSliderOpen] = useState(false);
   const navigate = useNavigate();
+  const params = useParams();
 
   const [ltoggle, setLtoggle] = useState(false);
   const [atoggle, setAtoggle] = useState(false);
   const [patoggle, setPAtoggle] = useState(false);
 
+  const [lectures, setLectures] = useState([]);
+  const [assignments, setAssignments] = useState([]);
+  const [pa, setPa] = useState([]);
+
   const sliderOpenChange = () => {
     setIsSliderOpen(!isSliderOpen);
   };
+
+  const getContent = async () => {
+    const res = await axios(`${ApiUrl}/course/${params.courseId}`);
+
+    console.log(res.data);
+    setLectures(res.data.lectures);
+    setAssignments(res.data.assignments);
+    setPa(res.data.p_assignments);
+  };
+
+  useEffect(() => {
+    getContent();
+  }, []);
 
   return (
     <div className="flex h-full px-[10px] md:px-[80px] relative">
       <div className="Sidebar sticky top-16 z-40 w-[25%] hidden md:flex md:w-[20%] flex-col h-full border-r border-gray-300">
         <div className="flex flex-col">
-          <div className="flex flex-col my-2  pb-2">
+          <div className="flex flex-col my-2 pb-2">
             <div
               className="flex items-center justify-between hover:cursor-pointer transition-all duration-500"
               onClick={() => setLtoggle(!ltoggle)}
@@ -59,17 +75,20 @@ const Course = () => {
               }`}
             >
               {ltoggle &&
+                lectures.length > 0 &&
                 lectures.map((lecture, index) => (
                   <h1
                     onClick={() =>
                       navigate(
-                        `/user-dashboard/courses/courseId/lectures/lectureId`
+                        `/user-dashboard/courses/${params.courseId}/lectures/${lecture._id}`
                       )
                     }
                     key={index}
                     className="text-[12px] md:text-[14px] mt-2 flex gap-1 items-center"
                   >
-                    <span className="font-[600] cursor-pointer">{lecture}</span>
+                    <span className="font-[600] cursor-pointer">
+                      {lecture.title}
+                    </span>
                   </h1>
                 ))}
             </div>
@@ -77,7 +96,7 @@ const Course = () => {
 
           <hr className="border-0 h-[2px] bg-gradient-to-r bg-red-700 mr-4" />
 
-          <div className="flex flex-col my-2  pb-2">
+          <div className="flex flex-col my-2 pb-2">
             <div
               className="flex items-center justify-between hover:cursor-pointer transition-all duration-500"
               onClick={() => setAtoggle(!atoggle)}
@@ -108,20 +127,17 @@ const Course = () => {
               } `}
             >
               {atoggle &&
+                assignments.length > 0 &&
                 assignments.map((assignment, index) => (
-                  <h1
-                    onClick={() =>
-                      navigate(
-                        `/user-dashboard/courses/courseId/assignments/assignmentId`
-                      )
-                    }
+                  <Link
+                    to={`/user-dashboard/courses/${params.courseId}/assignments/${assignment._id}`}
                     key={index}
                     className="text-[12px] md:text-[14px] mt-2 flex gap-1 items-center"
                   >
                     <span className="font-[600] cursor-pointer">
-                      {assignment}
+                      Assignment {index}
                     </span>
-                  </h1>
+                  </Link>
                 ))}
             </div>
           </div>
@@ -143,7 +159,7 @@ const Course = () => {
                     <HiMiniComputerDesktop />
                   </span>
                   <span className="font-[600] text-[16px]">
-                    Pragramming Assignments
+                    Programming Assignments
                   </span>
                 </h1>
 
@@ -161,16 +177,19 @@ const Course = () => {
               } `}
             >
               {patoggle &&
-                progAssignments.map((assignment, index) => (
+                pa.length > 0 &&
+                pa.map((assignment, index) => (
                   <h1
                     onClick={() =>
-                      navigate(`/user-dashboard/courses/courseId/pa/pa_id`)
+                      navigate(
+                        `/user-dashboard/courses/${params.courseId}/pa/${assignment._id}`
+                      )
                     }
                     key={index}
                     className="text-[12px] md:text-[14px] mt-2 flex gap-1 items-center"
                   >
                     <span className="font-[600] cursor-pointer">
-                      {assignment}
+                      PA {index}
                     </span>
                   </h1>
                 ))}
@@ -188,7 +207,7 @@ const Course = () => {
       </div>
 
       <div
-        className={`Sidebar-collapsed md:hidden  fixed top-0 left-0 h-full mt-16 w-[50%] bg-gray-100 border-r border-gray-300 z-30 transform transition-transform duration-300 ease-in-out ${
+        className={`Sidebar-collapsed md:hidden fixed top-0 left-0 h-full mt-16 w-[50%] bg-gray-100 border-r border-gray-300 z-30 transform transition-transform duration-300 ease-in-out ${
           isSliderOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -199,7 +218,7 @@ const Course = () => {
             </span>
           </button>
           <div className="flex flex-col ml-4 mt-6">
-            <div className="flex flex-col my-2  pb-2">
+            <div className="flex flex-col my-2 pb-2">
               <div
                 className="flex items-center justify-between hover:cursor-pointer transition-all duration-500"
                 onClick={() => setLtoggle(!ltoggle)}
@@ -230,11 +249,12 @@ const Course = () => {
                 }`}
               >
                 {ltoggle &&
+                  lectures &&
                   lectures.map((lecture, index) => (
                     <h1
                       onClick={() => {
                         navigate(
-                          `/user-dashboard/courses/courseId/lectures/lectureId`
+                          `/user-dashboard/courses/${params.courseId}/lectures/${lecture._id}`
                         );
                         setIsSliderOpen(!isSliderOpen);
                       }}
@@ -242,7 +262,7 @@ const Course = () => {
                       className="text-[12px] md:text-[14px] mt-2 flex gap-1 items-center"
                     >
                       <span className="font-[600] cursor-pointer">
-                        {lecture}
+                        {lecture.title}
                       </span>
                     </h1>
                   ))}
@@ -251,7 +271,7 @@ const Course = () => {
 
             <hr className="border-0 h-[2px] bg-gradient-to-r bg-red-700 mr-4" />
 
-            <div className="flex flex-col my-2  pb-2">
+            <div className="flex flex-col my-2 pb-2">
               <div
                 className="flex items-center justify-between hover:cursor-pointer transition-all duration-500"
                 onClick={() => setAtoggle(!atoggle)}
@@ -286,7 +306,7 @@ const Course = () => {
                     <h1
                       onClick={() => {
                         navigate(
-                          `/user-dashboard/courses/courseId/assignments/assignmentId`
+                          `/user-dashboard/courses/${params.courseId}/assignments/${assignment._id}`
                         );
                         setIsSliderOpen(!isSliderOpen);
                       }}
@@ -294,7 +314,7 @@ const Course = () => {
                       className="text-[12px] md:text-[14px] mt-2 flex gap-1 items-center"
                     >
                       <span className="font-[600] cursor-pointer">
-                        {assignment}
+                        {assignment.title}
                       </span>
                     </h1>
                   ))}
@@ -318,7 +338,7 @@ const Course = () => {
                       <HiMiniComputerDesktop />
                     </span>
                     <span className="font-[600] text-[16px]">
-                      Pragramming Assignments
+                      Programming Assignments
                     </span>
                   </h1>
 
@@ -339,7 +359,9 @@ const Course = () => {
                   progAssignments.map((assignment, index) => (
                     <h1
                       onClick={() => {
-                        navigate(`/user-dashboard/courses/courseId/pa/pa_id`);
+                        navigate(
+                          `/user-dashboard/courses/${params.courseId}/pa/${assignment}`
+                        );
                         setIsSliderOpen(!isSliderOpen);
                       }}
                       key={index}

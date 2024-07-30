@@ -1,9 +1,8 @@
 from flask import request, jsonify
 from flask_restful import Resource
 from datetime import datetime, timedelta
+from flask_jwt_extended import create_access_token
 from model.connection import mongo_handler
-from instances import app
-
 
 class UserLoginAPI(Resource):
     def post(self):
@@ -18,14 +17,9 @@ class UserLoginAPI(Resource):
         )
 
         if existing_user:
-            token = jwt.encode(
-                {
-                    "id": str(existing_user["_id"]),
-                    "role": existing_user.get("role", "student"),
-                    "exp": datetime.utcnow() + timedelta(days=90),
-                },
-                "SECRET_KEY",
-                algorithm="HS256",
+            token = create_access_token(
+                identity={"id": str(existing_user["_id"]), "role": existing_user.get("role", "student")},
+                expires_delta=timedelta(days=90)
             )
             return {
                 "_id": str(existing_user["_id"]),
@@ -63,14 +57,9 @@ class UserLoginAPI(Resource):
             if not new_user:
                 return {"error": "Failed to retrieve new user"}, 500
 
-            token = jwt.encode(
-                {
-                    "id": str(new_user["_id"]),
-                    "role": new_user.get("role", "student"),
-                    "exp": datetime.utcnow() + timedelta(days=90),
-                },
-                "SECRET_KEY",
-                algorithm="HS256",
+            token = create_access_token(
+                identity={"id": str(new_user["_id"]), "role": new_user.get("role", "student")},
+                expires_delta=timedelta(days=90)
             )
 
             return {
@@ -82,6 +71,3 @@ class UserLoginAPI(Resource):
                 "role": new_user.get("role", "student"),
                 "token": token,
             }, 201
-
-
-# login

@@ -50,7 +50,7 @@ class AllCourses(Resource):
         courses = mongo_handler.get_all_documents("CourseCluster")
         for course in courses:
             course["_id"] = str(course["_id"])
-        return jsonify(dumps(courses))
+        return jsonify(courses)
 
 class CourseById(Resource):
     def get(self):
@@ -71,5 +71,5 @@ class CourseById(Resource):
             return {"message": "Invalid course ID format"}, 400
         
         if course:
-            return jsonify(dumps(course))
+            return jsonify(course)
         return {"message": "Course not found"}, 404

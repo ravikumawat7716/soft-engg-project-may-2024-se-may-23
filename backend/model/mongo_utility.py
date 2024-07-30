@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from pymongo.errors import DuplicateKeyError
-
+from bson.objectid import ObjectId
 
 class MongoDBHandler:
     def __init__(self, uri: str, db_name: str):
@@ -8,7 +8,6 @@ class MongoDBHandler:
         self.db = self.client[db_name]
 
     def create_collection(self, collection_name: str, schema: dict):
-        # Check if the collection already exists
         if collection_name not in self.db.list_collection_names():
             self.db.create_collection(
                 collection_name, validator={"$jsonSchema": schema}
@@ -22,9 +21,7 @@ class MongoDBHandler:
         try:
             result = collection.insert_one(document)
             print(f"Document inserted into '{collection_name}' collection.")
-
             return result.inserted_id
-
         except DuplicateKeyError:
             print("Document with the same key already exists.")
 
@@ -36,24 +33,22 @@ class MongoDBHandler:
         else:
             print(f"Document not found in '{collection_name}' collection.")
             return None
-        
+
     def get_all_documents(self, collection_name: str):
         collection = self.db[collection_name]
         documents = list(collection.find())
-        if documents:
-            return documents
-        else:
-            return []
+        return documents
 
-    def update_document(
-        self, collection_name: str, field_name: str, field_value, update_data: dict
-    ):
+
+    def update_document(self, collection_name: str, field_name: str, field_value, update_data: dict):
         collection = self.db[collection_name]
         result = collection.update_one({field_name: field_value}, {"$set": update_data})
         if result.matched_count > 0:
             print(f"Document in '{collection_name}' collection updated successfully.")
+            return True
         else:
             print(f"Document not found in '{collection_name}' collection.")
+            return False
 
     def delete_document(self, collection_name: str, field_name: str, field_value):
         collection = self.db[collection_name]

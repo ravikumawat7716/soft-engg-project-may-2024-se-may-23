@@ -28,7 +28,7 @@ def create_app():
     # Course APIs
     api.add_resource(Course, "/course")
     api.add_resource(AllCourses, "/courses")
-    api.add_resource(CourseById, "/course/<string:course_id>")
+    api.add_resource(CourseById, "/course")
 
     # Assignment APIs
     api.add_resource(CreateAssignmentAPI, "/create_assignment")

@@ -1,29 +1,31 @@
 from flask import request, jsonify
 from flask_restful import Resource
-import jwt
 from datetime import datetime, timedelta
 from model.connection import mongo_handler
 from instances import app
 
+
 class UserLoginAPI(Resource):
     def post(self):
         data = request.json
-        email = data.get('email')
+        email = data.get("email")
 
         if not email:
             return {"error": "Email is required"}, 400
 
-        existing_user = mongo_handler.get_document_by_field("StudentCluster", "email", email)
+        existing_user = mongo_handler.get_document_by_field(
+            "StudentCluster", "email", email
+        )
 
         if existing_user:
             token = jwt.encode(
                 {
                     "id": str(existing_user["_id"]),
                     "role": existing_user.get("role", "student"),
-                    "exp": datetime.utcnow() + timedelta(days=90)
+                    "exp": datetime.utcnow() + timedelta(days=90),
                 },
                 "SECRET_KEY",
-                algorithm="HS256"
+                algorithm="HS256",
             )
             return {
                 "_id": str(existing_user["_id"]),
@@ -32,7 +34,7 @@ class UserLoginAPI(Resource):
                 "roll_no": existing_user.get("roll_no", ""),
                 "profileURL": existing_user.get("photo", ""),
                 "role": existing_user.get("role", "student"),
-                "token": token
+                "token": token,
             }, 200
         else:
             required_fields = ["name", "email", "roll_no", "photo"]
@@ -54,7 +56,9 @@ class UserLoginAPI(Resource):
             if not new_user_id:
                 return {"error": "Failed to insert new user"}, 500
 
-            new_user = mongo_handler.get_document_by_field("StudentCluster", "_id", new_user_id)
+            new_user = mongo_handler.get_document_by_field(
+                "StudentCluster", "_id", new_user_id
+            )
 
             if not new_user:
                 return {"error": "Failed to retrieve new user"}, 500
@@ -63,10 +67,10 @@ class UserLoginAPI(Resource):
                 {
                     "id": str(new_user["_id"]),
                     "role": new_user.get("role", "student"),
-                    "exp": datetime.utcnow() + timedelta(days=90)
+                    "exp": datetime.utcnow() + timedelta(days=90),
                 },
                 "SECRET_KEY",
-                algorithm="HS256"
+                algorithm="HS256",
             )
 
             return {
@@ -76,7 +80,8 @@ class UserLoginAPI(Resource):
                 "roll_no": new_user.get("roll_no", ""),
                 "profileURL": new_user.get("photo", ""),
                 "role": new_user.get("role", "student"),
-                "token": token
+                "token": token,
             }, 201
 
-#login 
+
+# login

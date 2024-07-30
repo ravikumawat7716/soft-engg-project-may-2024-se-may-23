@@ -30,3 +30,6 @@ class NotesGenerator(Resource):
         except Exception as e:
             print("Error occurred:", str(e))
             return jsonify({"error": str(e)}), 500
+
+    def get(self):
+        return jsonify({"message": "Welcome to the Notes Generator API!"})

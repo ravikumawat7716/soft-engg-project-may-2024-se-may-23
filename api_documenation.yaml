@@ -1,0 +1,949 @@
+openapi: "3.0.0"
+info:
+  title: "Effective integration of Generative AI into programming learning environments"
+  description: "This file provides a description of APIs for user login, assignment management, Gen AI functionalities and Courses."
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:5000"
+tags:
+  - name: User
+    description: Operations related to user authentication.
+  - name: Assignments
+    description: Operations related to assignment management.
+  - name: Gen AI
+    description: Operations related to General AI functionalities.
+  - name: Programming Assignments
+    description: Operations related to programming assignments.
+  - name : Courses
+    description : Operations related to courses.
+
+paths:
+  /login:
+    post:
+      summary: "User Login"
+      description: "Endpoint to authenticate a user."
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: "Email of the user."
+              required:
+                - email
+            example:
+              email: "test_user@example.com"
+      responses:
+        "200":
+          description: "Successful login."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  roll_no:
+                    type: string
+                  profileURL:
+                    type: string
+                  role:
+                    type: string
+                  token:
+                    type: string
+              examples:
+                example1:
+                  summary: "Example of successful login"
+                  value:
+                    _id: "60b8d2956c8e2e4564d2c83b"
+                    name: "John Doe"
+                    email: "john.doe@example.com"
+                    roll_no: "12345"
+                    profileURL: "http://example.com/profile.jpg"
+                    role: "student"
+                    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        "400":
+          description: "Bad request, email is required."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error message."
+              examples:
+                example1:
+                  summary: "Example of bad request"
+                  value:
+                    error: "Email is required."
+        "500":
+          description: "Server error."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error message."
+
+  /create_assignment:
+    post:
+      summary: "Create a new assignment"
+      description: "Endpoint to create a new assignment."
+      tags:
+        - Assignments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                courseId:
+                  type: string
+                  description: "ID of the course."
+                assignmentName:
+                  type: string
+                  description: "Name of the assignment."
+                description:
+                  type: string
+                  description: "Description of the assignment."
+              required:
+                - courseId
+                - assignmentName
+                - description
+            example:
+              courseId: "course_123"
+              assignmentName: "Assignment 1"
+              description: "Description of Assignment 1"
+      responses:
+        "200":
+          description: "Successful creation of a new assignment."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Success message."
+              examples:
+                example1:
+                  summary: "Example of successful assignment creation"
+                  value:
+                    message: "Assignment created successfully."
+        "500":
+          description: "Server error."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error message."
+
+  /get_course_assignments/{courseId}:
+    get:
+      summary: "Get assignments for a course"
+      description: "Endpoint to retrieve assignments for a specified course."
+      tags:
+        - Assignments
+      parameters:
+        - in: path
+          name: courseId
+          required: true
+          schema:
+            type: string
+          description: "ID of the course."
+      responses:
+        "200":
+          description: "Successful retrieval of course assignments."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assignments:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        assignmentId:
+                          type: string
+                        title:
+                          type: string
+                        description:
+                          type: string
+              examples:
+                example1:
+                  summary: "Example of successful retrieval of course assignments"
+                  value:
+                    assignments:
+                      - assignmentId: "assignment_1"
+                        title: "Assignment Title 1"
+                        description: "Description of Assignment 1"
+                      - assignmentId: "assignment_2"
+                        title: "Assignment Title 2"
+                        description: "Description of Assignment 2"
+        "500":
+          description: "Server error."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error message."
+
+  /get_assignment/{courseId}/{assignmentId}:
+    get:
+      summary: "Get assignment details"
+      description: "Endpoint to retrieve details of a specified assignment."
+      tags:
+        - Assignments
+      parameters:
+        - in: path
+          name: courseId
+          required: true
+          schema:
+            type: string
+          description: "ID of the course."
+        - in: path
+          name: assignmentId
+          required: true
+          schema:
+            type: string
+          description: "ID of the assignment."
+      responses:
+        "200":
+          description: "Successful retrieval of assignment details."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assignment:
+                    type: object
+                    properties:
+                      assignmentId:
+                        type: string
+                      title:
+                        type: string
+                      description:
+                        type: string
+                      testCases:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            input:
+                              type: string
+                            output:
+                              type: string
+              examples:
+                example1:
+                  summary: "Example of successful retrieval of assignment details"
+                  value:
+                    assignment:
+                      assignmentId: "assignment_1"
+                      title: "Assignment Title 1"
+                      description: "Description of Assignment 1"
+                      testCases:
+                        - input: "Sample input 1"
+                          output: "Expected output 1"
+                        - input: "Sample input 2"
+                          output: "Expected output 2"
+        "500":
+          description: "Server error."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error message."
+
+  /video_summary:
+    post:
+      summary: "Get video summary"
+      description: "Endpoint to get a summary of a provided video."
+      tags:
+        - Gen AI
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                link:
+                  type: string
+                  description: "URL of the video to summarize."
+                email:
+                  type: string
+                  description: "Email of the user requesting the summary."
+              required:
+                - link
+                - email
+            example:
+              link: "http://example.com/video.mp4"
+              email: "test_user@example.com"
+      responses:
+        "200":
+          description: "Successful retrieval of video summary."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    description: "Summary of the video."
+              examples:
+                example1:
+                  summary: "Example of successful video summary"
+                  value:
+                    result: "This video covers the basics of ..."
+        "400":
+          description: "Bad request, missing 'link' or 'email'."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error message."
+        "500":
+          description: "Server error."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error message."
+
+  /code_explanation:
+    post:
+      summary: "Get code explanation"
+      description: "Endpoint to get an explanation of provided code."
+      tags:
+        - Gen AI
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: string
+              description: "Code to explain."
+            example: |
+              def hello_world():
+                print('Hello, world!')
+      responses:
+        "200":
+          description: "Successful retrieval of code explanation."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  explanation:
+                    type: string
+                    description: "Explanation of the code."
+              examples:
+                example1:
+                  summary: "Example of successful code explanation"
+                  value:
+                    explanation: "This code defines a function 'hello_world' which prints 'Hello, world!' when called."
+        "400":
+          description: "Bad request, code is required."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error message."
+        "500":
+          description: "Server error."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error message."
+
+  /notes_generator:
+    post:
+      summary: "Generate notes"
+      description: "Endpoint to generate detailed notes on a specified topic."
+      tags:
+        - Gen AI
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                topic:
+                  type: string
+                  description: "Topic to generate notes on."
+                email:
+                  type: string
+                  description: "Email of the user requesting the notes."
+              required:
+                - topic
+                - email
+            example:
+              topic: "Introduction to Machine Learning"
+              email: "test_user@example.com"
+      responses:
+        "200":
+          description: "Successful generation of notes."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notes:
+                    type: string
+                    description: "Generated notes on the topic."
+              examples:
+                example1:
+                  summary: "Example of successful notes generation"
+                  value:
+                    notes: "These notes cover the basics of machine learning, including supervised and unsupervised learning..."
+        "400":
+          description: "Bad request, missing 'topic' or 'email'."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error message."
+        "500":
+          description: "Server error."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error message."
+
+  /chatbot:
+    post:
+      summary: "Chat with AI"
+      description: "Endpoint to interact with a chatbot."
+      tags:
+        - Gen AI
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: "Message to send to the chatbot."
+                email:
+                  type: string
+                  description: "Email of the user interacting with the chatbot."
+              required:
+                - message
+                - email
+            example:
+              message: "Hello, how are you?"
+              email: "test_user@example.com"
+      responses:
+        "200":
+          description: "Successful interaction with the chatbot."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    description: "Chatbot's response."
+              examples:
+                example1:
+                  summary: "Example of chatbot response"
+                  value:
+                    response: "I'm doing great, thank you for asking!"
+        "400":
+          description: "Bad request, missing 'message' or 'email'."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error message."
+        "500":
+          description: "Server error."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error message."
+
+  /pa/create:
+    post:
+      summary: "Create programming assignment"
+      description: "Endpoint to create a new programming assignment."
+      tags:
+        - Programming Assignments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: "Title of the assignment."
+                courseId:
+                  type: string
+                  description: "ID of the course."
+                testCases:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      input:
+                        type: string
+                        description: "Input for the test case."
+                      output:
+                        type: string
+                        description: "Expected output for the test case."
+              required:
+                - title
+                - courseId
+                - testCases
+            example:
+              title: "Programming Assignment 1"
+              courseId: "course_123"
+              testCases:
+                - input: "5"
+                  output: "25"
+                - input: "10"
+                  output: "100"
+      responses:
+        "200":
+          description: "Successful creation of a new programming assignment."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Success message."
+              examples:
+                example1:
+                  summary: "Example of successful assignment creation"
+                  value:
+                    message: "Programming assignment created successfully."
+        "500":
+          description: "Server error."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error message."
+
+  /pa/{courseId}:
+    get:
+      summary: "Get programming assignments for a course"
+      description: "Endpoint to retrieve programming assignments for a specified course."
+      tags:
+        - Programming Assignments
+      parameters:
+        - in: path
+          name: courseId
+          required: true
+          schema:
+            type: string
+          description: "ID of the course."
+      responses:
+        "200":
+          description: "Successful retrieval of programming assignments."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assignments:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        assignmentId:
+                          type: string
+                        title:
+                          type: string
+              examples:
+                example1:
+                  summary: "Example of successful retrieval of programming assignments"
+                  value:
+                    assignments:
+                      - assignmentId: "pa_1"
+                        title: "Assignment Title 1"
+                      - assignmentId: "pa_2"
+                        title: "Assignment Title 2"
+        "500":
+          description: "Server error."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error message."
+
+  /pa/{courseId}/{assignmentId}:
+    get:
+      summary: "Get details of a specific programming assignment"
+      description: "Endpoint to retrieve details of a specific programming assignment."
+      tags:
+        - Programming Assignments
+      parameters:
+        - in: path
+          name: courseId
+          required: true
+          schema:
+            type: string
+          description: "ID of the course."
+        - in: path
+          name: assignmentId
+          required: true
+          schema:
+            type: string
+          description: "ID of the assignment."
+      responses:
+        "200":
+          description: "Successful retrieval of assignment details."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assignment:
+                    type: object
+                    properties:
+                      assignmentId:
+                        type: string
+                      title:
+                        type: string
+                      testCases:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            input:
+                              type: string
+                            output:
+                              type: string
+              examples:
+                example1:
+                  summary: "Example of successful retrieval of assignment details"
+                  value:
+                    assignment:
+                      assignmentId: "pa_1"
+                      title: "Assignment Title 1"
+                      testCases:
+                        - input: "Sample input 1"
+                          output: "Expected output 1"
+                        - input: "Sample input 2"
+                          output: "Expected output 2"
+        "500":
+          description: "Server error."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error message."
+  /courses:
+    get:
+      summary: "Retrieve all courses"
+      description: "Endpoint to retrieve a list of all courses."
+      tags:
+        - Courses
+      responses:
+        "200":
+          description: "Successful retrieval of all courses."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    course_id:
+                      type: string
+                      description: "ID of the course."
+                    title:
+                      type: string
+                      description: "Title of the course."
+                    description:
+                      type: string
+                      description: "Description of the course."
+                    lectures:
+                      type: array
+                      items:
+                        type: object
+                    assignments:
+                      type: array
+                      items:
+                        type: object
+                    programmingAssignments:
+                      type: array
+                      items:
+                        type: object
+                    createdAt:
+                      type: string
+                      format: date-time
+                      description: "Creation date of the course."
+                    updatedAt:
+                      type: string
+                      format: date-time
+                      description: "Last update date of the course."
+              examples:
+                example1:
+                  summary: "Example of successful retrieval of all courses"
+                  value:
+                    - course_id: "course_123"
+                      title: "Course Title 1"
+                      description: "Description of Course 1"
+                      lectures: []
+                      assignments: []
+                      programmingAssignments: []
+                      createdAt: "2024-07-31T00:00:00Z"
+                      updatedAt: "2024-07-31T00:00:00Z"
+                    - course_id: "course_456"
+                      title: "Course Title 2"
+                      description: "Description of Course 2"
+                      lectures: []
+                      assignments: []
+                      programmingAssignments: []
+                      createdAt: "2024-07-31T00:00:00Z"
+                      updatedAt: "2024-07-31T00:00:00Z"
+        "500":
+          description: "Server error."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error message."
+
+  /course:
+    post:
+      summary: "Create a new course"
+      description: "Endpoint to create a new course."
+      tags:
+        - Courses
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: "Title of the course."
+                description:
+                  type: string
+                  description: "Description of the course."
+              required:
+                - title
+                - description
+            example:
+              title: "New Course Title"
+              description: "Description of the new course."
+      responses:
+        "200":
+          description: "Successful creation of a new course."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  course_id:
+                    type: string
+                    description: "ID of the newly created course."
+              examples:
+                example1:
+                  summary: "Example of successful course creation"
+                  value:
+                    course_id: "course_789"
+        "400":
+          description: "Bad request, missing 'title' or 'description'."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Error message."
+              examples:
+                example1:
+                  summary: "Example of bad request"
+                  value:
+                    message: "Title and description are required."
+        "500":
+          description: "Server error."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error message."
+
+  /course/{course_id}:
+    get:
+      summary: "Retrieve a course by ID"
+      description: "Endpoint to retrieve a course by its ID."
+      tags:
+        - Courses
+      parameters:
+        - in: path
+          name: course_id
+          required: true
+          schema:
+            type: string
+          description: "ID of the course."
+      responses:
+        "200":
+          description: "Successful retrieval of the course."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  course_id:
+                    type: string
+                    description: "ID of the course."
+                  title:
+                    type: string
+                    description: "Title of the course."
+                  description:
+                    type: string
+                    description: "Description of the course."
+                  lectures:
+                    type: array
+                    items:
+                      type: object
+                  assignments:
+                    type: array
+                    items:
+                      type: object
+                  programmingAssignments:
+                    type: array
+                    items:
+                      type: object
+                  createdAt:
+                    type: string
+                    format: date-time
+                    description: "Creation date of the course."
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    description: "Last update date of the course."
+              examples:
+                example1:
+                  summary: "Example of successful retrieval of a course by ID"
+                  value:
+                    course_id: "course_123"
+                    title: "Course Title 1"
+                    description: "Description of Course 1"
+                    lectures: []
+                    assignments: []
+                    programmingAssignments: []
+                    createdAt: "2024-07-31T00:00:00Z"
+                    updatedAt: "2024-07-31T00:00:00Z"
+        "400":
+          description: "Bad request, invalid course ID format."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Error message."
+              examples:
+                example1:
+                  summary: "Example of bad request"
+                  value:
+                    message: "Invalid course ID format."
+        "404":
+          description: "Course not found."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Error message."
+              examples:
+                example1:
+                  summary: "Example of course not found"
+                  value:
+                    message: "Course not found."
+        "500":
+          description: "Server error."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: "Error message."
+
+

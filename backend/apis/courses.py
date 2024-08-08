@@ -2,7 +2,7 @@ from flask import jsonify, request
 from flask_restful import Resource
 from datetime import datetime
 from model.connection import mongo_handler
-from bson.json_util import dumps, ObjectId
+from bson.json_util import ObjectId
 
 class Course(Resource):
     def post(self):

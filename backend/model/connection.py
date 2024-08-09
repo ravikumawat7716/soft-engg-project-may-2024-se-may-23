@@ -37,35 +37,9 @@ def create_collection():
     mongo_handler.create_collection("LecturesCluster", lecture_schema)
 
 
+# Custom JSON encoder to handle ObjectId while returning JSON response
 class JSONEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, ObjectId):
             return str(obj)
         return super(JSONEncoder, self).default(obj)
-
-
-# return mongo_handler
-
-# Example student data
-# new_student = {
-#     "name": "John Doe",
-#     "email": "john.doe@example.com",
-#     "roll_no": "12345",
-#     "photo": "http://example.com/photo.jpg",
-#     "login_logs": [],
-#     "LLM_setting": {},
-# }
-
-# # CRUD operations for StudentCluster
-# mongo_handler.insert_document("StudentCluster", new_student)
-# student = mongo_handler.get_document_by_field(
-#     "StudentCluster", "email", "john.doe@example.com"
-# )
-# if student:
-#     print("Student retrieved:", student)
-# update_data_student = {"name": "Johnathan Doe"}
-# mongo_handler.update_document(
-#     "StudentCluster", "email", "john.doe@example.com", update_data_student
-# )
-
-# mongo_handler.delete_document("StudentCluster", "email", "john.doe@example.com")

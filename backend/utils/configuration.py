@@ -61,6 +61,7 @@ def create_app():
     api.add_resource(Lectures, "/lectures", "/lectures/<string:course_id>")
     api.add_resource(Assignments, "/assignments", "/assignments/<string:course_id>")
     api.add_resource(Courses, "/courses", "/courses/<string:course_id>")
+
     api.add_resource(
         ProgrammingAssignment,
         "/programming_assignments",

@@ -194,7 +194,6 @@ chatbot_log_schema = {
     },
 }
 
-
 assignment_schema = {
     "bsonType": "object",
     "required": ["questions", "courseId"],
@@ -202,40 +201,19 @@ assignment_schema = {
         "questions": {
             "bsonType": "array",
             "description": "List of questions in the assignment",
-            "items": {
-                "bsonType": "object",
-                "required": ["type", "question", "answer"],
-                "properties": {
-                    "type": {
-                        "bsonType": "string",
-                        "enum": ["mcq", "msq", "subjective"],
-                        "description": "Type of the question",
-                    },
-                    "question": {
-                        "bsonType": "string",
-                        "description": "The question text",
-                    },
-                    "options": {
-                        "bsonType": "array",
-                        "description": "List of options for MCQ/MSQ questions",
-                        "items": {
-                            "bsonType": "string",
-                            "description": "An option for the question",
-                        },
-                    },
-                    "answer": {
-                        "bsonType": ["string", "array", "object"],
-                        "description": "The answer to the question",
-                    },
-                },
-            },
         },
         "courseId": {
             "bsonType": "objectId",
             "description": "Reference to the associated course",
         },
-        "createdAt": {"bsonType": "date", "description": "Creation timestamp"},
-        "updatedAt": {"bsonType": "date", "description": "Last update timestamp"},
+        "createdAt": {
+            "bsonType": "date",
+            "description": "Creation timestamp",
+        },
+        "updatedAt": {
+            "bsonType": "date",
+            "description": "Last update timestamp",
+        },
     },
 }
 
@@ -308,21 +286,7 @@ programming_assignment_schema = {
         },
         "testCases": {
             "bsonType": "array",
-            "description": "List of test cases",
-            "items": {
-                "bsonType": "object",
-                "required": ["input", "expectedOutput"],
-                "properties": {
-                    "input": {
-                        "bsonType": "string",
-                        "description": "Input for the test case",
-                    },
-                    "expectedOutput": {
-                        "bsonType": "string",
-                        "description": "Expected output for the test case",
-                    },
-                },
-            },
+            "description": "List of testCases in the assignment",
         },
         "courseId": {
             "bsonType": "objectId",

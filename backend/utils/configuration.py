@@ -7,6 +7,9 @@ from apis.login import UserLoginAPI
 from apis.assignments import CreateAssignmentAPI
 from apis.assignments import GetCourseAssignmentsAPI
 from apis.assignments import GetAssignmentAPI
+from apis.lectures import AddLectureAPI
+
+# from apis.lectures import GetLectureAPI
 from apis.gen_ai.video_summary import Video_Summary
 from apis.gen_ai.notes_generator import NotesGenerator
 from apis.gen_ai.code_explanation import CodeExplantion
@@ -35,9 +38,9 @@ def create_app():
     api.add_resource(UserLoginAPI, "/login")
 
     # Course APIs
-    # api.add_resource(Course, "/course")
-    # api.add_resource(AllCourses, "/courses")
-    # api.add_resource(CourseById, "/course/<string:course_id>")
+    api.add_resource(Course, "/course")
+    api.add_resource(AllCourses, "/courses")
+    api.add_resource(CourseById, "/course/<string:course_id>")
 
     # Assignment APIs
     api.add_resource(CreateAssignmentAPI, "/create_assignment")

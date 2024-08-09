@@ -46,11 +46,19 @@ class CreateAssignmentAPI(Resource):
         
 class GetCourseAssignmentsAPI(Resource):
     def get(self, courseId):
+        if not courseId:
+            return {"message": "Course ID is required"}, 400
+  
         try:
-            return jsonify({"message":"Returns all assignments for a given course"})
+            course = mongo_handler.get_document_by_field("CourseCluster", "_id", ObjectId(courseId))
+            if course:
+                assignments = course["assignments"]
+                return jsonify(assignments)
+            else:
+                return {"message": "Course not found"}, 404
 
         except Exception as e:
-            return jsonify({"error": str(e)}), 500  # Proper error handling
+            return {"message": "Invalid course ID format"}, 400
         
     
 class GetAssignmentAPI(Resource):

@@ -2,7 +2,6 @@ from model.mongo_utility import MongoDBHandler
 from model.schemas import (
     student_schema,
     llm_log_schema,
-    course_schema,
     chatbot_log_schema,
     assignment_schema,
     courses_schema,
@@ -26,9 +25,7 @@ mongo_handler = MongoDBHandler(uri, db_name)
 def create_collection():
     mongo_handler.create_collection("StudentCluster", student_schema)
     mongo_handler.create_collection("LLMLogs", llm_log_schema)
-    mongo_handler.create_collection("CourseCluster", course_schema)
     mongo_handler.create_collection("ChatbotLogs", chatbot_log_schema)
-
     mongo_handler.create_collection("AssignmentsCluster", assignment_schema)
     mongo_handler.create_collection("CoursesCluster", courses_schema)
     mongo_handler.create_collection(

@@ -5,7 +5,6 @@ from datetime import datetime
 
 from bson import ObjectId
 
-
 model = "qwen2:0.5b"
 
 
@@ -78,22 +77,3 @@ def LLMChatBot(chat, email, chat_id=None):
     chat_log["_id"] = str(chat_log["_id"])
 
     return chat_log
-
-    # stream = ollama.chat(
-    #     model=model,
-    #     messages=chat,
-    #     stream=True,
-    # )
-
-    # for chunk in stream:
-    #     print(chunk["message"]["content"], end="", flush=True)
-
-    # return stream
-
-
-# ChatBot([{"role": "user", "content": "Why is the sky blue?"}])
-
-# chats = [
-#     {"role": "user", "content": "Why is the sky blue?"},
-#     {"role": "assistant", "content": "The sky is blue because of Rayleigh scattering."},
-# ]

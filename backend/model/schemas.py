@@ -193,3 +193,142 @@ chatbot_log_schema = {
         },
     },
 }
+
+
+assignment_schema = {
+    "bsonType": "object",
+    "required": ["questions", "courseId"],
+    "properties": {
+        "questions": {
+            "bsonType": "array",
+            "description": "List of questions in the assignment",
+            "items": {
+                "bsonType": "object",
+                "required": ["type", "question", "answer"],
+                "properties": {
+                    "type": {
+                        "bsonType": "string",
+                        "enum": ["mcq", "msq", "subjective"],
+                        "description": "Type of the question",
+                    },
+                    "question": {
+                        "bsonType": "string",
+                        "description": "The question text",
+                    },
+                    "options": {
+                        "bsonType": "array",
+                        "description": "List of options for MCQ/MSQ questions",
+                        "items": {
+                            "bsonType": "string",
+                            "description": "An option for the question",
+                        },
+                    },
+                    "answer": {
+                        "bsonType": ["string", "array", "object"],
+                        "description": "The answer to the question",
+                    },
+                },
+            },
+        },
+        "courseId": {
+            "bsonType": "objectId",
+            "description": "Reference to the associated course",
+        },
+        "createdAt": {"bsonType": "date", "description": "Creation timestamp"},
+        "updatedAt": {"bsonType": "date", "description": "Last update timestamp"},
+    },
+}
+
+
+courses_schema = {
+    "bsonType": "object",
+    "required": ["title", "description"],
+    "properties": {
+        "title": {"bsonType": "string", "description": "Title of the course"},
+        "description": {
+            "bsonType": "string",
+            "description": "Description of the course",
+        },
+        "lectures": {
+            "bsonType": "array",
+            "description": "List of lecture references",
+            "items": {
+                "bsonType": "objectId",
+                "description": "Reference to a Lecture document",
+            },
+        },
+        "assignments": {
+            "bsonType": "array",
+            "description": "List of assignment references",
+            "items": {
+                "bsonType": "objectId",
+                "description": "Reference to an Assignment document",
+            },
+        },
+        "p_assignments": {
+            "bsonType": "array",
+            "description": "List of programming assignment references",
+            "items": {
+                "bsonType": "objectId",
+                "description": "Reference to a PA document",
+            },
+        },
+        "createdAt": {"bsonType": "date", "description": "Creation timestamp"},
+        "updatedAt": {"bsonType": "date", "description": "Last update timestamp"},
+    },
+}
+
+
+lecture_schema = {
+    "bsonType": "object",
+    "required": ["title", "youtubeId", "courseId"],
+    "properties": {
+        "title": {"bsonType": "string", "description": "Title of the lecture"},
+        "youtubeId": {
+            "bsonType": "string",
+            "description": "YouTube video ID for the lecture",
+        },
+        "courseId": {
+            "bsonType": "objectId",
+            "description": "Reference to the associated course",
+        },
+        "createdAt": {"bsonType": "date", "description": "Creation timestamp"},
+        "updatedAt": {"bsonType": "date", "description": "Last update timestamp"},
+    },
+}
+
+
+programming_assignment_schema = {
+    "bsonType": "object",
+    "required": ["title", "testCases", "courseId"],
+    "properties": {
+        "title": {
+            "bsonType": "string",
+            "description": "Title of the programming assignment",
+        },
+        "testCases": {
+            "bsonType": "array",
+            "description": "List of test cases",
+            "items": {
+                "bsonType": "object",
+                "required": ["input", "expectedOutput"],
+                "properties": {
+                    "input": {
+                        "bsonType": "string",
+                        "description": "Input for the test case",
+                    },
+                    "expectedOutput": {
+                        "bsonType": "string",
+                        "description": "Expected output for the test case",
+                    },
+                },
+            },
+        },
+        "courseId": {
+            "bsonType": "objectId",
+            "description": "Reference to the associated course",
+        },
+        "createdAt": {"bsonType": "date", "description": "Creation timestamp"},
+        "updatedAt": {"bsonType": "date", "description": "Last update timestamp"},
+    },
+}

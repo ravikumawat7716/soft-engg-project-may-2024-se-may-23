@@ -4,8 +4,13 @@ from model.schemas import (
     llm_log_schema,
     course_schema,
     chatbot_log_schema,
+    assignment_schema,
+    courses_schema,
+    programming_assignment_schema,
+    lecture_schema,
 )
-
+from bson import ObjectId
+import json
 
 # def mongoDB():
 
@@ -23,6 +28,20 @@ def create_collection():
     mongo_handler.create_collection("LLMLogs", llm_log_schema)
     mongo_handler.create_collection("CourseCluster", course_schema)
     mongo_handler.create_collection("ChatbotLogs", chatbot_log_schema)
+
+    mongo_handler.create_collection("AssignmentsCluster", assignment_schema)
+    mongo_handler.create_collection("CoursesCluster", courses_schema)
+    mongo_handler.create_collection(
+        "ProgrammingAssignmentsCluster", programming_assignment_schema
+    )
+    mongo_handler.create_collection("LecturesCluster", lecture_schema)
+
+
+class JSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, ObjectId):
+            return str(obj)
+        return super(JSONEncoder, self).default(obj)
 
 
 # return mongo_handler

@@ -1,69 +1,30 @@
-import React, { useState, useRef } from "react";
+import axios from "axios";
+import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { ApiUrl } from "../config";
 
-const questions = [
-  {
-    type: "mcq",
-    question: "What is 1 + 2 ?",
-    options: ["0", "5", "3", "7"],
-    answer: 2,
-  },
-  {
-    type: "mcq",
-    question: "What is the capital of Rajasthan?",
-    options: ["Sydney", "Bhopal", "Pune", "Jaipur"],
-    answer: 3,
-  },
-  {
-    type: "mcq",
-    question: "How many judges are in Supreme Court?",
-    options: ["31", "30", "32", "28"],
-    answer: 0,
-  },
-  {
-    type: "msq",
-    question: "Which rivers are in India?",
-    options: ["yamuna", "Ganga", "Nile", "Sindhu"],
-    answer: [0, 2, 3],
-  },
-  {
-    type: "msq",
-    question: "Which awards belongs to Football?",
-    options: ["Padma Shri", "Puskas Award", "Ballen d'or", "Nobal Prize"],
-    answer: [2, 3],
-  },
-  {
-    type: "subjective",
-    question: "What is the capital of India?",
-    answer: "Delhi",
-  },
-  {
-    type: "subjective",
-    question: "How many continents on Earth?",
-    answer: "7",
-  },
-  {
-    type: "subjective",
-    question: "In which stae Kaziranga national Park is?",
-    answer: "Assam",
-  },
-];
 const Assignment = () => {
+  const params = useParams();
+
+  const [questions, setQuestions] = useState(null);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const textareaRef = useRef(null);
 
-  const [selectedOptions, setSelectedOptions] = useState(
-    Array(questions.length).fill(null)
-  );
-  const [selectedMultiOptions, setSelectedMultiOptions] = useState(
-    Array(questions.length).fill([])
-  );
-  const [subjectiveAnswers, setSubjectiveAnswers] = useState(
-    Array(questions.length).fill("")
-  );
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [selectedMultiOptions, setSelectedMultiOptions] = useState([]);
+  const [subjectiveAnswers, setSubjectiveAnswers] = useState([]);
   const [score, setScore] = useState(null);
+
+  useEffect(() => {
+    if (questions) {
+      setSelectedOptions(Array(questions.length).fill(null));
+      setSelectedMultiOptions(Array(questions.length).fill([]));
+      setSubjectiveAnswers(Array(questions.length).fill(""));
+    }
+  }, [questions]);
 
   const handleOptionChange = (index, value) => {
     const newSelectedOptions = [...selectedOptions];
@@ -73,12 +34,15 @@ const Assignment = () => {
 
   const handleMultiOptionChange = (index, value) => {
     const newSelectedMultiOptions = [...selectedMultiOptions];
-    if (newSelectedMultiOptions[index].includes(Number(value))) {
+    if (newSelectedMultiOptions[index]?.includes(Number(value))) {
       newSelectedMultiOptions[index] = newSelectedMultiOptions[index].filter(
         (option) => option !== Number(value)
       );
     } else {
-      newSelectedMultiOptions[index].push(Number(value));
+      newSelectedMultiOptions[index] = [
+        ...(newSelectedMultiOptions[index] || []),
+        Number(value),
+      ];
     }
     setSelectedMultiOptions(newSelectedMultiOptions);
   };
@@ -98,7 +62,7 @@ const Assignment = () => {
         }
       } else if (question.type === "msq") {
         if (
-          JSON.stringify(selectedMultiOptions[index].sort()) ===
+          JSON.stringify(selectedMultiOptions[index]?.sort()) ===
           JSON.stringify(question.answer.sort())
         ) {
           newScore++;
@@ -144,6 +108,20 @@ const Assignment = () => {
     textarea.style.height = `${Math.min(textarea.scrollHeight, 120)}px`;
   };
 
+  const getAssignment = async () => {
+    console.log("getting assignment");
+    const res = await axios(`${ApiUrl}/assignment/${params.assignmentId}`);
+
+    console.log(res.data);
+
+    setQuestions(res.data.questions);
+  };
+
+  useEffect(() => {
+    console.log("useEffect called");
+    getAssignment();
+  }, [params.assignmentId]);
+
   return (
     <div className="ml-2 ">
       <div className="flex mt-8 w-full justify-between">
@@ -166,55 +144,56 @@ const Assignment = () => {
           {/* Questions are here */}
 
           <div className="max-w-xl  p-5 bg-white rounded-lg shadow-md">
-            {questions.map((question, index) => (
-              <div key={index} className="mb-6">
-                <h2 className="text-xl font-semibold mb-3">
-                  {question.question}
-                </h2>
-                {question.type === "mcq" &&
-                  question.options.map((option, optionIndex) => (
-                    <div key={optionIndex} className="flex items-center mb-2">
-                      <input
-                        type="radio"
-                        value={optionIndex}
-                        checked={selectedOptions[index] === optionIndex}
-                        onChange={(e) =>
-                          handleOptionChange(index, e.target.value)
-                        }
-                        className="mr-2"
-                      />
-                      <label className="text-gray-700">{option}</label>
-                    </div>
-                  ))}
-                {question.type === "msq" &&
-                  question.options.map((option, optionIndex) => (
-                    <div key={optionIndex} className="flex items-center mb-2">
-                      <input
-                        type="checkbox"
-                        value={optionIndex}
-                        checked={selectedMultiOptions[index].includes(
-                          optionIndex
-                        )}
-                        onChange={(e) =>
-                          handleMultiOptionChange(index, e.target.value)
-                        }
-                        className="mr-2"
-                      />
-                      <label className="text-gray-700">{option}</label>
-                    </div>
-                  ))}
-                {question.type === "subjective" && (
-                  <textarea
-                    value={subjectiveAnswers[index]}
-                    onChange={(e) =>
-                      handleSubjectiveChange(index, e.target.value)
-                    }
-                    className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-700"
-                    rows="1"
-                  />
-                )}
-              </div>
-            ))}
+            {questions &&
+              questions.map((question, index) => (
+                <div key={index} className="mb-6">
+                  <h2 className="text-xl font-semibold mb-3">
+                    {question.question}
+                  </h2>
+                  {question.type === "mcq" &&
+                    question.options.map((option, optionIndex) => (
+                      <div key={optionIndex} className="flex items-center mb-2">
+                        <input
+                          type="radio"
+                          value={optionIndex}
+                          checked={selectedOptions[index] === optionIndex}
+                          onChange={(e) =>
+                            handleOptionChange(index, e.target.value)
+                          }
+                          className="mr-2"
+                        />
+                        <label className="text-gray-700">{option}</label>
+                      </div>
+                    ))}
+                  {question.type === "msq" &&
+                    question.options.map((option, optionIndex) => (
+                      <div key={optionIndex} className="flex items-center mb-2">
+                        <input
+                          type="checkbox"
+                          value={optionIndex}
+                          checked={selectedMultiOptions[index]?.includes(
+                            optionIndex
+                          )}
+                          onChange={(e) =>
+                            handleMultiOptionChange(index, e.target.value)
+                          }
+                          className="mr-2"
+                        />
+                        <label className="text-gray-700">{option}</label>
+                      </div>
+                    ))}
+                  {question.type === "subjective" && (
+                    <textarea
+                      value={subjectiveAnswers[index]}
+                      onChange={(e) =>
+                        handleSubjectiveChange(index, e.target.value)
+                      }
+                      className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-700"
+                      rows="1"
+                    />
+                  )}
+                </div>
+              ))}
             <button
               onClick={handleSubmit}
               className="w-full py-2 px-4 bg-red-700 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"

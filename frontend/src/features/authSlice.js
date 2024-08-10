@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { ApiUrl } from "../config";
 
 const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
@@ -17,7 +18,7 @@ export const googleSignIN = createAsyncThunk(
   async (user, thunkApi) => {
     try {
       const res = await axios({
-        url: `${process.env.Reac}/auth/googlelogin`,
+        url: `${ApiUrl}/login`,
         method: "POST",
         data: user,
       });

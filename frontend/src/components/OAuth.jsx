@@ -19,20 +19,32 @@ const OAuth = () => {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      if (user.email.endsWith("@ds.study.iitm.ac.in")) {
-        dispatch(googleSignIN(user))
-          .then((res) => {
-            console.log(res);
-            navigate("/");
-            toast.success("Sign In Successfully");
-          })
-          .catch((error) => {
-            console.log("Dispatch error:", error);
-            toast.error("Failed to sign in. Please try again.");
-          });
-      } else {
-        toast.error("You are not a member of the IITM community.");
-      }
+      console.log(user);
+
+      const rollNo = user.email.split("@")[0];
+
+      const data = {
+        name: user.displayName,
+        email: user.email,
+        photo: user.profileUrl,
+        roll_no: rollNo,
+        role: "student",
+      };
+
+      dispatch(googleSignIN(data))
+        .then((res) => {
+          console.log(res);
+          navigate("/");
+          toast.success("Sign In Successfully");
+        })
+        .catch((error) => {
+          console.log("Dispatch error:", error);
+          toast.error("Failed to sign in. Please try again.");
+        });
+
+      // else {
+      //   toast.error("You are not a member of the IITM community.");
+      // }
     } catch (error) {
       console.log("Could not sign in with Google", error);
       toast.error("Could not sign in with Google. Please try again.");

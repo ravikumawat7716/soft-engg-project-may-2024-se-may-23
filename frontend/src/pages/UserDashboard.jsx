@@ -20,6 +20,8 @@ const UserDashboard = () => {
 
   const [courses, setCourses] = useState(null);
 
+  console.log(courses);
+
   const getCourses = async () => {
     const res = await axios({
       url: `${ApiUrl}/courses`,

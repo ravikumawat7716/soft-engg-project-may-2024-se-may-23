@@ -23,21 +23,37 @@ const Course = () => {
   const [assignments, setAssignments] = useState([]);
   const [pa, setPa] = useState([]);
 
+  console.log(lectures);
+  console.log(pa);
+
   const sliderOpenChange = () => {
     setIsSliderOpen(!isSliderOpen);
   };
 
-  const getContent = async () => {
-    const res = await axios(`${ApiUrl}/course/${params.courseId}`);
+  const getCourseLecture = async () => {
+    const res = await axios(`${ApiUrl}/lectures/${params.courseId}`);
 
-    console.log(res.data);
-    setLectures(res.data.lectures);
-    setAssignments(res.data.assignments);
-    setPa(res.data.p_assignments);
+    setLectures(res.data);
+  };
+
+  const getCourseAssignments = async () => {
+    const res = await axios(`${ApiUrl}/assignments/${params.courseId}`);
+
+    setAssignments(res.data);
+  };
+
+  const getCoursePA = async () => {
+    const res = await axios(
+      `${ApiUrl}/programming_assignments/${params.courseId}`
+    );
+
+    setPa(res.data);
   };
 
   useEffect(() => {
-    getContent();
+    getCourseLecture();
+    getCourseAssignments();
+    getCoursePA();
   }, []);
 
   return (
@@ -78,10 +94,11 @@ const Course = () => {
                 lectures.length > 0 &&
                 lectures.map((lecture, index) => (
                   <h1
-                    onClick={() =>
-                      navigate(
-                        `/user-dashboard/courses/${params.courseId}/lectures/${lecture._id}`
-                      )
+                    onClick={
+                      () => {}
+                      // navigate(
+                      //   `/user-dashboard/courses/${params.courseId}/lectures/${lecture._id}`
+                      // )
                     }
                     key={index}
                     className="text-[12px] md:text-[14px] mt-2 flex gap-1 items-center"

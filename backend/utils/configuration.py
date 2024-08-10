@@ -40,11 +40,17 @@ def create_app():
     # Non-Gen AI APIs
 
     api.add_resource(
-        Lectures, "/lectures", "/lectures/<string:course_id>"
+        Lectures,
+        "/lectures",
+        "/lectures/<string:course_id>",
+        "/lecture/<string:lecture_id>",  # New route to get a lecture by lecture_id
     )  # Lectures API
 
     api.add_resource(
-        Assignments, "/assignments", "/assignments/<string:course_id>"
+        Assignments,
+        "/assignments",
+        "/assignments/<string:course_id>",
+        "/assignment/<string:assignment_id>",
     )  # Assignments API
 
     api.add_resource(Courses, "/courses", "/courses/<string:course_id>")  # Courses API
@@ -53,6 +59,7 @@ def create_app():
         ProgrammingAssignment,
         "/programming_assignments",
         "/programming_assignments/<string:course_id>",
+        "/programming_assignment/<string:programming_assignment>",
     )  # Programming Assignments API
 
     api.init_app(app)

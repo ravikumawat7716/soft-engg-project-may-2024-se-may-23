@@ -52,7 +52,25 @@ class Lectures(Resource):
             mimetype="application/json",
         )
 
-    def get(self, course_id=None, lecture_id=None):
+    def get(self, lecture_id=None, course_id=None):
+        if lecture_id:
+            if isinstance(lecture_id, str):
+                lecture_id = ObjectId(lecture_id)
+            lecture = mongo_handler.get_document_by_field(
+                "LecturesCluster", "_id", lecture_id
+            )
+
+            if lecture:
+                return Response(
+                    response=json.dumps(lecture, cls=JSONEncoder),
+                    status=200,
+                    mimetype="application/json",
+                )
+            return Response(
+                response=json.dumps({"error": "Lecture not found!"}),
+                status=404,
+                mimetype="application/json",
+            )
 
         if course_id:
             if isinstance(course_id, str):

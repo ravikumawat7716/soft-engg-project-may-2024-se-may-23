@@ -54,7 +54,7 @@ class ProgrammingAssignment(Resource):
             mimetype="application/json",
         )
 
-    def get(self, course_id=None):
+    def get(self, course_id=None, programming_assignment=None):
 
         if course_id:
             if isinstance(course_id, str):
@@ -78,6 +78,25 @@ class ProgrammingAssignment(Resource):
                 )
             return Response(
                 response=json.dumps({"error": "Course not found!"}),
+                status=404,
+                mimetype="application/json",
+            )
+
+        if programming_assignment:
+            if isinstance(programming_assignment, str):
+                programming_assignment = ObjectId(programming_assignment)
+            programming_assignment = mongo_handler.get_document_by_field(
+                "ProgrammingAssignmentsCluster", "_id", programming_assignment
+            )
+
+            if programming_assignment:
+                return Response(
+                    response=json.dumps(programming_assignment, cls=JSONEncoder),
+                    status=200,
+                    mimetype="application/json",
+                )
+            return Response(
+                response=json.dumps({"error": "Programming Assignment not found!"}),
                 status=404,
                 mimetype="application/json",
             )

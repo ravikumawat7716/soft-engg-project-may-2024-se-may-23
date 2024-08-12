@@ -21,12 +21,14 @@ const OAuth = () => {
 
       console.log(user);
 
+      console.log(user.photoURL);
+
       const rollNo = user.email.split("@")[0];
 
       const data = {
         name: user.displayName,
         email: user.email,
-        photo: user.profileURL,
+        photo: user.photoURL,
         roll_no: rollNo,
         role: "Student",
       };

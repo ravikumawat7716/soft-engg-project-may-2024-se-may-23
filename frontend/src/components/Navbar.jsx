@@ -18,9 +18,9 @@ const Navbar = () => {
     <div className="h-16 flex-shrink-0 flex justify-between items-center px-[10px] md:px-[80px] border-b border-gray-400 bg-gray-100 sticky top-0 z-50">
       <div className="flex items-center gap-2">
         <div>
-          <GiEgyptianBird className="h-[24px] w-[24px]" />
+        <img src="/download.png" className="h-[28px] w-[28px]" alt="Download" />
         </div>
-        <span className="font-semibold">Coursera</span>
+        <span className="font-semibold">StudyBuddy</span>
       </div>
 
       <div className="flex items-center gap-6">

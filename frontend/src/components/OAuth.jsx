@@ -26,7 +26,7 @@ const OAuth = () => {
       const data = {
         name: user.displayName,
         email: user.email,
-        photo: user.profileUrl,
+        photo: user.profileURL,
         roll_no: rollNo,
         role: "Student",
       };

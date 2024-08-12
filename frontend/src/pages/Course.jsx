@@ -94,11 +94,10 @@ const Course = () => {
                 lectures.length > 0 &&
                 lectures.map((lecture, index) => (
                   <h1
-                    onClick={
-                      () => {}
-                      // navigate(
-                      //   `/user-dashboard/courses/${params.courseId}/lectures/${lecture._id}`
-                      // )
+                    onClick={() =>
+                      navigate(
+                        `/user-dashboard/courses/${params.courseId}/lectures/${lecture._id}`
+                      )
                     }
                     key={index}
                     className="text-[12px] md:text-[14px] mt-2 flex gap-1 items-center"

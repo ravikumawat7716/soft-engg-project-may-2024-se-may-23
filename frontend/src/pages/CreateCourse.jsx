@@ -32,9 +32,9 @@ const CreateCourse = () => {
   });
 
   const onSubmit = async (payload) => {
-    // const res = await axios.post(`${ApiUrl}/courses/create`, payload);
-    // console.log(res.data);
-    // navigate("/");
+    const res = await axios.post(`${ApiUrl}/courses`, payload);
+    console.log(res.data);
+    navigate("/");
   };
 
   const inputClass =

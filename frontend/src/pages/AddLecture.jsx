@@ -30,7 +30,7 @@ const AddLecture = () => {
 
   useEffect(() => {
     const getCourses = async () => {
-      const res = await axios.get(`${ApiUrl}/courses/all`);
+      const res = await axios.get(`${ApiUrl}/courses`);
       setCourses(res.data);
     };
     getCourses();
@@ -40,9 +40,9 @@ const AddLecture = () => {
     console.log(data);
 
     try {
-      //   const response = await axios.post(`${ApiUrl}/lectures/create`, data);
-      //   console.log(response.data);
-      //   navigate("/");
+      const response = await axios.post(`${ApiUrl}/lectures`, data);
+      console.log(response.data);
+      navigate("/");
     } catch (error) {
       console.error(error);
     }

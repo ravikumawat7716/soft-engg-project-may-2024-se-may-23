@@ -64,12 +64,12 @@ const CreateAssignment = () => {
 
     console.log(convertedData);
     try {
-      // const response = await axios.post(
-      //   `${ApiUrl}/assignments/create`,
-      //   convertedData
-      // );
-      // console.log(response.data);
-      // navigate("/");
+      const response = await axios.post(
+        `${ApiUrl}/assignments`,
+        convertedData
+      );
+      console.log(response.data);
+      navigate("/");
     } catch (error) {
       console.error(error);
     }

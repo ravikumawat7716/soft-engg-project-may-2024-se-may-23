@@ -7,6 +7,8 @@ import { ApiUrl } from "../config";
 import { useSelector } from "react-redux";
 import Loading from "../components/Loading";
 
+import jsPDF from "jspdf";
+
 const Lecture = () => {
   const params = useParams();
 
@@ -88,6 +90,28 @@ const Lecture = () => {
     setLecture(res.data);
   };
 
+  const notesGenerate = async () => {
+    const data = {
+      topic: lecture.title,
+      email: currentUser.email,
+    };
+
+    const res = await axios({
+      url: `${ApiUrl}/notes_generator`,
+      method: "POST",
+      data: data,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const doc = new jsPDF();
+
+    doc.text(res.data.result, 10, 10);
+
+    doc.save(`${lecture.title}.pdf`);
+  };
+
   const videoSummery = async () => {
     const data = {
       link: `https://www.youtube.com/watch?v=${lecture.youtubeId}`,
@@ -129,7 +153,10 @@ const Lecture = () => {
       {lecture && (
         <div className="flex mt-4 w-full justify-between">
           <h1 className="font-semibold text-lg">{lecture.title}</h1>
-          <button className="mb-4 px-4 py-2 bg-red-700 text-white rounded-full text-sm transition-colors duration-300">
+          <button
+            className="mb-4 px-4 py-2 bg-red-700 text-white rounded-full text-sm transition-colors duration-300"
+            onClick={notesGenerate}
+          >
             Create Notes with AI
           </button>
           <button
@@ -147,7 +174,7 @@ const Lecture = () => {
               isModalOpen ? "w-[90%] md:w-[60%]" : "w-full"
             } flex flex-col gap-2 transition-all duration-500`}
           >
-            <div className="w-full h-[50%] border border-gray-400 rounded-md flex justify-center items-center">
+            <div className="w-full h-[70%] border border-gray-400 rounded-md flex justify-center items-center">
               <iframe
                 width="100%"
                 height="100%"

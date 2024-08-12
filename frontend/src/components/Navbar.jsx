@@ -28,7 +28,7 @@ const Navbar = () => {
           <div className="flex items-center gap-4">
             <span className="font-semibold">{currentUser.role}</span>
             <img
-              src={currentUser.profileUrl}
+              src={currentUser.profileURL}
               className="h-[32px] w-[32px] rounded-full"
             />
             <div className="hidden md:flex flex-col">

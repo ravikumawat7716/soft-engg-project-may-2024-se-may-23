@@ -1,24 +1,35 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { ApiUrl } from "../config";
 
 const CourseIntro = () => {
+  const params = useParams();
+
+  const [courseTitle, setCourseTitle] = useState("");
+  const [courseDescription, setCourseDescription] = useState("");
+
+  const getCourse = async () => {
+    const res = await axios(`${ApiUrl}/courses/${params.courseId}`);
+
+    setCourseTitle(res.data.title);
+    setCourseDescription(res.data.description);
+  };
+
+  useEffect(() => {
+    getCourse();
+  }, []);
+
   return (
     <div>
       <div className="ml-8 mt-8 flex flex-col gap-4">
-        <h1 className="font-semibold text-[16px]">
-          Course Software Engineering
-        </h1>
+        {courseTitle && (
+          <h1 className="font-semibold text-[16px]">{courseTitle}</h1>
+        )}
 
-        <h1 className="text-[14px] ">
-          Software engineering is an engineering approach to software
-          development.[1][2][3] A practitioner, a software engineer, applies the
-          engineering design process to develop software. The terms programmer
-          and coder overlap software engineer, but they imply only the
-          construction aspect of typical software engineer workload.[4] A
-          software engineer applies a software development process,[1][5] which
-          involves the definition, implementation, testing, management and
-          maintenance of software systems and with development of the software
-          development process itself.
-        </h1>
+        {courseDescription && (
+          <h1 className="text-[14px] ">{courseDescription}</h1>
+        )}
       </div>
     </div>
   );

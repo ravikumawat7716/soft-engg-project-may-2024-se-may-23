@@ -2,9 +2,13 @@ import axios from "axios";
 import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { ApiUrl } from "../config";
+import { useSelector } from "react-redux";
+import Loading from "../components/Loading";
 
 const Assignment = () => {
   const params = useParams();
+
+  const { currentUser } = useSelector((state) => state.auth);
 
   const [questions, setQuestions] = useState(null);
 
@@ -13,10 +17,53 @@ const Assignment = () => {
   const [newMessage, setNewMessage] = useState("");
   const textareaRef = useRef(null);
 
+  const [loading, setLoading] = useState(false);
+  const [chatbot, setChatBot] = useState(null);
+
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [selectedMultiOptions, setSelectedMultiOptions] = useState([]);
   const [subjectiveAnswers, setSubjectiveAnswers] = useState([]);
   const [score, setScore] = useState(null);
+
+  useEffect(() => {
+    localStorage.removeItem("chat_id");
+  }, []);
+
+  const chat_id = localStorage.getItem("chat_id");
+
+  const sendMessage = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    if (newMessage.trim() !== "") {
+      setNewMessage("");
+
+      const data = {
+        chat: newMessage,
+        email: currentUser.email,
+      };
+
+      if (chat_id !== null) {
+        data.chat_id = chat_id;
+      }
+
+      const res = await axios({
+        url: `${ApiUrl}/chatbot`,
+        method: "POST",
+        data: data,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log(res.data.chat);
+      localStorage.setItem("chat_id", res.data._id);
+      setChatBot(res.data.chat);
+      setLoading(false);
+      setCount(count + 1);
+
+      adjustTextareaHeight();
+    }
+  };
 
   useEffect(() => {
     if (questions) {
@@ -83,19 +130,25 @@ const Assignment = () => {
     setIsModalOpen(!isModalOpen);
   };
 
-  const sendMessage = () => {
-    if (newMessage.trim() !== "") {
-      setMessages([...messages, { from: "user", text: newMessage }]);
-      setNewMessage("");
-      setTimeout(() => {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { from: "bot", text: "This is a simulated response." },
-        ]);
-      }, 1000);
-      adjustTextareaHeight();
-    }
-  };
+  const scrollRef = useRef();
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
+  // const sendMessage = () => {
+  //   if (newMessage.trim() !== "") {
+  //     setMessages([...messages, { from: "user", text: newMessage }]);
+  //     setNewMessage("");
+  //     setTimeout(() => {
+  //       setMessages((prevMessages) => [
+  //         ...prevMessages,
+  //         { from: "bot", text: "This is a simulated response." },
+  //       ]);
+  //     }, 1000);
+  //     adjustTextareaHeight();
+  //   }
+  // };
 
   const handleInputChange = (e) => {
     setNewMessage(e.target.value);
@@ -216,17 +269,16 @@ const Assignment = () => {
           } border-2 border-gray-400 rounded-md h-[500px] flex flex-col transition-all duration-500`}
         >
           <div className="flex-1 p-4 overflow-y-auto">
-            {messages.length > 0 ? (
-              messages.map((message, index) => (
-                <div key={index} className="mb-2">
-                  <div
-                    className={`p-2 rounded ${
-                      message.from === "bot"
-                        ? "bg-gray-200"
-                        : "bg-blue-500 text-white"
-                    }`}
-                  >
-                    {message.text}
+            {chatbot && chatbot.length > 0 ? (
+              chatbot.map((chat, index) => (
+                <div key={index}>
+                  <div className="mb-2 flex flex-col">
+                    {chat.role === "user" && <h1>user : {chat.content}</h1>}
+                    {chat.role === "assistant" && (
+                      <h1 className="font-semibold text-[14px]">
+                        assistant: {chat.content}
+                      </h1>
+                    )}
                   </div>
                 </div>
               ))
@@ -234,13 +286,15 @@ const Assignment = () => {
               <div className="h-full w-full flex items-center justify-center">
                 <div className="flex flex-col gap-2">
                   <span className="text-center text-4xl">
-                    <span className="icon-large">🤖</span>{" "}
+                    <span className="icon-large">🤖</span>
                   </span>
                   <span>Hi User, I am AI. How can I help you?</span>
                 </div>
               </div>
             )}
+            <div ref={scrollRef}></div>
           </div>
+          <div>{loading && <Loading />}</div>
           <div className="p-4 border-t border-gray-300 flex">
             <textarea
               value={newMessage}
@@ -253,7 +307,7 @@ const Assignment = () => {
             ></textarea>
             <button
               onClick={sendMessage}
-              className="ml-2 px-4 py-2 text-white bg-red-500 rounded-md transition-colors duration-300"
+              className="ml-2 px-4 py-2 text-white bg-red-700 rounded-md transition-colors duration-300"
             >
               Go
             </button>

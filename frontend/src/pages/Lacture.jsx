@@ -11,6 +11,7 @@ const Lecture = () => {
   const params = useParams();
 
   const [count, setCount] = useState(0);
+  const [summery, setSummery] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const { currentUser } = useSelector((state) => state.auth);
@@ -87,6 +88,24 @@ const Lecture = () => {
     setLecture(res.data);
   };
 
+  const videoSummery = async () => {
+    const data = {
+      link: `https://www.youtube.com/watch?v=${lecture.youtubeId}`,
+      email: currentUser.email,
+    };
+
+    const res = await axios({
+      url: `${ApiUrl}/video_summary`,
+      method: "POST",
+      data: data,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    setSummery(res.data.result);
+  };
+
   const getLectureLLM = async () => {
     // Add your logic for fetching LLM data here
   };
@@ -128,7 +147,7 @@ const Lecture = () => {
               isModalOpen ? "w-[90%] md:w-[60%]" : "w-full"
             } flex flex-col gap-2 transition-all duration-500`}
           >
-            <div className="w-full h-96 border border-gray-400 rounded-md flex justify-center items-center">
+            <div className="w-full h-[50%] border border-gray-400 rounded-md flex justify-center items-center">
               <iframe
                 width="100%"
                 height="100%"
@@ -141,7 +160,13 @@ const Lecture = () => {
               ></iframe>
             </div>
             <div className="transcript">
-              <h1 className="font-semibold">Video Transcripts</h1>
+              <button
+                className="px-4 py-2 rounded-full text-white bg-red-700"
+                onClick={videoSummery}
+              >
+                Video Summery
+              </button>
+              {summery && <h1>{summery}</h1>}
             </div>
           </div>
 

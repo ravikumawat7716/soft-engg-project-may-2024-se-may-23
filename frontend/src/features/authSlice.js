@@ -21,6 +21,9 @@ export const googleSignIN = createAsyncThunk(
         url: `${ApiUrl}/login`,
         method: "POST",
         data: user,
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
 
       if (res.data) {

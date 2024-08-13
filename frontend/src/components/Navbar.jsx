@@ -2,7 +2,7 @@ import React from "react";
 import { GiEgyptianBird } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../features/authSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const { currentUser } = useSelector((state) => state.auth);
@@ -26,7 +26,18 @@ const Navbar = () => {
       <div className="flex items-center gap-6">
         {currentUser && (
           <div className="flex items-center gap-4">
-            <span className="font-[700] text-[18px]">{currentUser.role}</span>
+            {currentUser.role === "instructor" && (
+              <Link
+                className="font-[700] text-[18px] hover:text-blue-500"
+                to="/instructor"
+              >
+                Instructor
+              </Link>
+            )}
+            {currentUser.role === "student" && (
+              <span className="font-[700] text-[18px]">Student</span>
+            )}
+
             <img
               src={currentUser.profileURL}
               className="h-[32px] w-[32px] rounded-full"

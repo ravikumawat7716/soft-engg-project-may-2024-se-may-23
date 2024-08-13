@@ -51,7 +51,7 @@ const AddLecture = () => {
   return (
     <div className="flex justify-center">
       <div className="w-[500px]">
-        <h2>Add Lecture</h2>
+        <h2 className="font-semibold text-[20px] mt-[50px]">Add Lecture</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
             <TextField

@@ -13,6 +13,7 @@ import CreateCourse from "./pages/CreateCourse";
 import AddLecture from "./pages/AddLecture";
 import CreateAssignment from "./pages/CreateAssignment";
 import CreatePA from "./pages/CreatePA";
+import InstructorPage from "./pages/InstructorPage";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -28,6 +29,7 @@ function App() {
             <Route path="/create-assignment" element={<CreateAssignment />} />
             <Route path="/create-pa" element={<CreatePA />} />
             <Route path="/user-dashboard" element={<UserDashboard />} />
+            <Route path="/instructor" element={<InstructorPage />} />
             <Route
               path="/user-dashboard/courses/:courseId"
               element={<Course />}

@@ -22,7 +22,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<UserDashboard />} />
             <Route path="/create-course" element={<CreateCourse />} />
             <Route path="/create-lecture" element={<AddLecture />} />
             <Route path="/create-assignment" element={<CreateAssignment />} />

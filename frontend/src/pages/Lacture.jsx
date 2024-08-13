@@ -70,9 +70,9 @@ const Lecture = () => {
       localStorage.setItem("chat_id", res.data._id);
       setChatBot(res.data.chat);
       setLoading(false);
-      setCount(count + 1);
 
       adjustTextareaHeight();
+      setCount(count + 1);
     }
   };
 
@@ -144,7 +144,7 @@ const Lecture = () => {
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
+  }, [count]);
 
   return (
     <div className="ml-6 h-[80%] ">
@@ -208,13 +208,14 @@ const Lecture = () => {
                   <div key={index}>
                     <div className="mb-2 flex flex-col gap-1">
                       {chat.role === "user" && (
-                        <h1 className="font-semibold text-[14px]">
+                        <h1 className="font-semibold text-[16px]">
                           User : {chat.content}
                         </h1>
                       )}
                       {chat.role === "assistant" && (
-                        <h1 className="font-semibold text-[14px]">
-                          <span className="">🤖</span>: {chat.content}
+                        <h1 className="font-semibold text-[16px]">
+                          <span className="text-[18px]">🤖</span>:{" "}
+                          {chat.content}
                         </h1>
                       )}
                     </div>

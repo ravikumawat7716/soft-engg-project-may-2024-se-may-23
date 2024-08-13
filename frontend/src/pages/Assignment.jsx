@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { ApiUrl } from "../config";
 import { useSelector } from "react-redux";
 import Loading from "../components/Loading";
+import { Button } from "@chakra-ui/react";
 
 const Assignment = () => {
   const params = useParams();
@@ -265,18 +266,22 @@ const Assignment = () => {
 
         <div
           className={`chat-bot-div ${
-            isModalOpen ? "w-[90%] h-[540px] md:w-[40%]" : "hidden"
+            isModalOpen ? "w-[90%] h-[600px] md:w-[40%]" : "hidden"
           } border-2 border-gray-400 rounded-md h-[500px] flex flex-col transition-all duration-500`}
         >
           <div className="flex-1 p-4 overflow-y-auto">
             {chatbot && chatbot.length > 0 ? (
               chatbot.map((chat, index) => (
                 <div key={index}>
-                  <div className="mb-2 flex flex-col">
-                    {chat.role === "user" && <h1>user : {chat.content}</h1>}
+                  <div className="mb-2 flex flex-col gap-1">
+                    {chat.role === "user" && (
+                      <h1 className="font-semibold text-[14px]">
+                        User : {chat.content}
+                      </h1>
+                    )}
                     {chat.role === "assistant" && (
                       <h1 className="font-semibold text-[14px]">
-                        assistant: {chat.content}
+                        <span className="">🤖</span>: {chat.content}
                       </h1>
                     )}
                   </div>
@@ -288,29 +293,32 @@ const Assignment = () => {
                   <span className="text-center text-4xl">
                     <span className="icon-large">🤖</span>
                   </span>
-                  <span>Hi User, I am AI. How can I help you?</span>
+                  <span className="font-semibold text-[18px]">
+                    Hi User, I am AI ChatBot. How can I help you?
+                  </span>
                 </div>
               </div>
             )}
             <div ref={scrollRef}></div>
           </div>
-          <div>{loading && <Loading />}</div>
+          <div className="mb-2">{loading && <Loading />}</div>
           <div className="p-4 border-t border-gray-300 flex">
             <textarea
               value={newMessage}
               onChange={handleInputChange}
               onKeyUp={(e) => e.key === "Enter" && sendMessage()}
               placeholder="Type your query..."
-              className="flex-1 p-2 outline-none border px-4 py-2 text-sm rounded-md resize-none overflow-hidden"
+              className="flex-1 p-2 outline-none border px-4 py-2 text-sm font-semibold rounded-md resize-none overflow-hidden"
               rows="1"
               ref={textareaRef}
             ></textarea>
-            <button
+            <Button
               onClick={sendMessage}
               className="ml-2 px-4 py-2 text-white bg-red-700 rounded-md transition-colors duration-300"
+              isLoading={loading}
             >
               Go
-            </button>
+            </Button>
           </div>
         </div>
       </div>

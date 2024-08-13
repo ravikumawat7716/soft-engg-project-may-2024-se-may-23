@@ -52,7 +52,7 @@ const ProgrammingAssignment = () => {
 
   useEffect(() => {
     getCoursePA();
-  }, [params.paId]);
+  }, [params.pa_id]);
 
   return (
     <div className=" ml-6">

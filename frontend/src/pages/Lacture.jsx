@@ -8,9 +8,12 @@ import { useSelector } from "react-redux";
 import Loading from "../components/Loading";
 
 import jsPDF from "jspdf";
+import { Button } from "@chakra-ui/react";
 
 const Lecture = () => {
   const params = useParams();
+  const [isNotesLoading, setNotesIsLoading] = useState(false);
+  const [isSummeryLoading, setSummeryLoading] = useState(false);
 
   const [count, setCount] = useState(0);
   const [summery, setSummery] = useState(null);
@@ -51,7 +54,6 @@ const Lecture = () => {
       };
 
       if (chat_id !== null) {
-        // Check if chat_id exists
         data.chat_id = chat_id;
       }
 
@@ -91,6 +93,7 @@ const Lecture = () => {
   };
 
   const notesGenerate = async () => {
+    setNotesIsLoading(true);
     const data = {
       topic: lecture.title,
       email: currentUser.email,
@@ -110,9 +113,11 @@ const Lecture = () => {
     doc.text(res.data.result, 10, 10);
 
     doc.save(`${lecture.title}.pdf`);
+    setNotesIsLoading(false);
   };
 
   const videoSummery = async () => {
+    setSummeryLoading(true);
     const data = {
       link: `https://www.youtube.com/watch?v=${lecture.youtubeId}`,
       email: currentUser.email,
@@ -128,19 +133,12 @@ const Lecture = () => {
     });
 
     setSummery(res.data.result);
-  };
-
-  const getLectureLLM = async () => {
-    // Add your logic for fetching LLM data here
+    setSummeryLoading(false);
   };
 
   useEffect(() => {
     getLecture();
   }, [params.lectureId]);
-
-  useEffect(() => {
-    getLectureLLM();
-  }, [count]);
 
   const scrollRef = useRef();
 
@@ -149,16 +147,17 @@ const Lecture = () => {
   }, []);
 
   return (
-    <div className="ml-6">
+    <div className="ml-6 h-[80%] ">
       {lecture && (
         <div className="flex mt-4 w-full justify-between">
           <h1 className="font-semibold text-lg">{lecture.title}</h1>
-          <button
+          <Button
             className="mb-4 px-4 py-2 bg-red-700 text-white rounded-full text-sm transition-colors duration-300"
             onClick={notesGenerate}
+            isLoading={isNotesLoading}
           >
             Create Notes with AI
-          </button>
+          </Button>
           <button
             onClick={toggleModal}
             className="mb-4 px-4 py-2 text-sm bg-red-700 text-white rounded-full transition-colors duration-300"
@@ -168,13 +167,13 @@ const Lecture = () => {
         </div>
       )}
       {lecture && (
-        <div className="flex flex-col md:flex-row gap-3 w-full transition-all duration-500">
+        <div className="flex flex-col h-full md:flex-row  gap-3 w-full transition-all duration-500">
           <div
             className={`video-div ${
               isModalOpen ? "w-[90%] md:w-[60%]" : "w-full"
             } flex flex-col gap-2 transition-all duration-500`}
           >
-            <div className="w-full h-[70%] border border-gray-400 rounded-md flex justify-center items-center">
+            <div className="w-full h-[60%] border  border-gray-400 rounded-md flex justify-center items-center">
               <iframe
                 width="100%"
                 height="100%"
@@ -187,30 +186,35 @@ const Lecture = () => {
               ></iframe>
             </div>
             <div className="transcript">
-              <button
+              <Button
                 className="px-4 py-2 rounded-full text-white bg-red-700"
                 onClick={videoSummery}
+                isLoading={isSummeryLoading}
               >
                 Video Summery
-              </button>
-              {summery && <h1>{summery}</h1>}
+              </Button>
+              {summery && <h1 className="mt-4 font-semibold">{summery}</h1>}
             </div>
           </div>
 
           <div
             className={`chat-bot-div ${
-              isModalOpen ? "w-[90%] h-[500px] md:w-[40%]" : "hidden"
+              isModalOpen ? "w-[90%] h-[600px] md:w-[40%]" : "hidden"
             } border-2 border-gray-400 rounded-md h-[500px] flex flex-col transition-all duration-500`}
           >
             <div className="flex-1 p-4 overflow-y-auto">
               {chatbot && chatbot.length > 0 ? (
                 chatbot.map((chat, index) => (
                   <div key={index}>
-                    <div className="mb-2 flex flex-col">
-                      {chat.role === "user" && <h1>user : {chat.content}</h1>}
+                    <div className="mb-2 flex flex-col gap-1">
+                      {chat.role === "user" && (
+                        <h1 className="font-semibold text-[14px]">
+                          User : {chat.content}
+                        </h1>
+                      )}
                       {chat.role === "assistant" && (
                         <h1 className="font-semibold text-[14px]">
-                          assistant: {chat.content}
+                          <span className="">🤖</span>: {chat.content}
                         </h1>
                       )}
                     </div>
@@ -222,29 +226,32 @@ const Lecture = () => {
                     <span className="text-center text-4xl">
                       <span className="icon-large">🤖</span>
                     </span>
-                    <span>Hi User, I am AI. How can I help you?</span>
+                    <span className="font-semibold text-[18px]">
+                      Hi User, I am AI ChatBot. How can I help you?
+                    </span>
                   </div>
                 </div>
               )}
               <div ref={scrollRef}></div>
             </div>
-            <div>{loading && <Loading />}</div>
+            <div className="mb-2">{loading && <Loading />}</div>
             <div className="p-4 border-t border-gray-300 flex">
               <textarea
                 value={newMessage}
                 onChange={handleInputChange}
                 onKeyUp={(e) => e.key === "Enter" && sendMessage()}
                 placeholder="Type your query..."
-                className="flex-1 p-2 outline-none border px-4 py-2 text-sm rounded-md resize-none overflow-hidden"
+                className="flex-1 p-2 outline-none border px-4 py-2 text-sm font-semibold rounded-md resize-none overflow-hidden"
                 rows="1"
                 ref={textareaRef}
               ></textarea>
-              <button
+              <Button
                 onClick={sendMessage}
                 className="ml-2 px-4 py-2 text-white bg-red-700 rounded-md transition-colors duration-300"
+                isLoading={loading}
               >
                 Go
-              </button>
+              </Button>
             </div>
           </div>
         </div>

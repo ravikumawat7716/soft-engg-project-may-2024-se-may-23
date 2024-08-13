@@ -1,86 +1,142 @@
-import React from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import axios from "axios";
 import {
   TextField,
   Button,
-  Select,
   MenuItem,
-  FormControl,
+  Select,
   InputLabel,
+  FormControl,
 } from "@mui/material";
 import { ApiUrl } from "../config";
 import { useNavigate } from "react-router-dom";
-import * as yup from "yup";
 
-const courseSchema = yup.object({
-  title: yup.string().min(5).max(30).required(),
-  description: yup.string().required(),
-});
-
-const CreateCourse = () => {
+const CreatePA = () => {
   const navigate = useNavigate();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-  } = useForm({
-    resolver: yupResolver(courseSchema),
+  const { register, handleSubmit, control, reset } = useForm({
+    defaultValues: {
+      title: "",
+      courseId: "",
+      testCases: [{ input: "", expectedOutput: "" }],
+    },
+  });
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "testCases",
   });
 
-  const onSubmit = async (payload) => {
-    const res = await axios.post(`${ApiUrl}/courses`, payload);
-    console.log(res.data);
-    navigate("/");
-  };
+  const [courses, setCourses] = useState([]);
 
-  const inputClass =
-    "border border-red-400 rounded-md h-10 p-2 w-full bg-transparent outline-none";
+  useEffect(() => {
+    const getCourses = async () => {
+      const res = await axios.get(`${ApiUrl}/courses`);
+      setCourses(res.data);
+    };
+    getCourses();
+  }, []);
+
+  const onSubmit = async (data) => {
+    console.log(data);
+
+    try {
+      const response = await axios.post(
+        `${ApiUrl}/programming_assignments`,
+        data
+      );
+      console.log(response.data);
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="flex justify-center">
       <div className="w-[500px]">
-        <h1>Create Course</h1>
-
+        <h2 className="font-[800] text-gray-800 text-[20px] mt-4 text-center">
+          Create a Programming Assignment
+        </h2>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="mt-5">
-            <label>Title</label>
-            <input
-              type="text"
-              placeholder="Enter Course Title"
-              className={inputClass}
-              {...register("title")}
+          <div>
+            <TextField
+              label="Title"
+              {...register("title", { required: true })}
+              fullWidth
+              margin="normal"
             />
-            <span className="text-red-500 font-bold">
-              {errors.title?.message}
-            </span>
           </div>
 
-          <div className="mt-5">
-            <label>Description</label>
-            <textarea
-              rows={4}
-              placeholder="Enter Description"
-              className={inputClass}
-              {...register("description")}
-            />
-            <span className="text-red-500 font-bold">
-              {errors.description?.message}
-            </span>
+          <div>
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="course-label">Course</InputLabel>
+              <Controller
+                name="courseId"
+                control={control}
+                render={({ field }) => (
+                  <Select {...field} labelId="course-label" label="Course">
+                    {courses.map((course) => (
+                      <MenuItem key={course._id} value={course._id}>
+                        {course.title}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
+            </FormControl>
           </div>
 
-          <div className="mt-5">
-            <button className="bg-red-500 w-full p-2 h-10 rounded-lg">
-              Submit
-            </button>
+          <div>
+            <h3>Test Cases</h3>
+            {fields.map((item, index) => (
+              <div key={item.id} style={{ marginBottom: "1rem" }}>
+                <TextField
+                  label={`Input ${index + 1}`}
+                  {...register(`testCases.${index}.input`, { required: true })}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label={`Expected Output ${index + 1}`}
+                  {...register(`testCases.${index}.expectedOutput`, {
+                    required: true,
+                  })}
+                  fullWidth
+                  margin="normal"
+                />
+                <Button
+                  type="button"
+                  onClick={() => remove(index)}
+                  variant="contained"
+                  color="error"
+                  style={{ marginTop: "0.5rem" }}
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
+            <Button
+              type="button"
+              onClick={() => append({ input: "", expectedOutput: "" })}
+              variant="contained"
+              color="primary"
+            >
+              Add Test Case
+            </Button>
           </div>
+
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            style={{ marginTop: "1rem" }}
+          >
+            Submit
+          </Button>
         </form>
       </div>
     </div>
   );
 };
 
-export default CreateCourse;
+export default CreatePA;

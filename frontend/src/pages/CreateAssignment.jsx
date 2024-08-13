@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { Button as ChakraButton } from "@chakra-ui/react";
 import {
   TextField,
   Button,
@@ -14,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 
 const CreateAssignment = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const [courses, setCourses] = useState([]);
   const { control, handleSubmit, register, setValue, watch } = useForm({
@@ -46,7 +48,7 @@ const CreateAssignment = () => {
   }, []);
 
   const onSubmit = async (data) => {
-    // Convert answers to indices
+    setLoading(true);
     const convertedData = {
       ...data,
       questions: data.questions.map((question) => {
@@ -64,13 +66,12 @@ const CreateAssignment = () => {
 
     console.log(convertedData);
     try {
-      const response = await axios.post(
-        `${ApiUrl}/assignments`,
-        convertedData
-      );
+      const response = await axios.post(`${ApiUrl}/assignments`, convertedData);
       console.log(response.data);
+      setLoading(false);
       navigate("/");
     } catch (error) {
+      setLoading(false);
       console.error(error);
     }
   };
@@ -78,8 +79,10 @@ const CreateAssignment = () => {
   return (
     <div className="flex justify-center ">
       <div className="w-[500px]">
-        <h1>Create Assignment</h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <h1 className="text-center font-[800] text-gray-800 text-[20px] mt-4">
+          Create a Assignment
+        </h1>
+        <form className="mb-2" onSubmit={handleSubmit(onSubmit)}>
           <FormControl fullWidth margin="normal">
             <InputLabel id="course-label">Course</InputLabel>
             <Controller
@@ -191,12 +194,13 @@ const CreateAssignment = () => {
           >
             Add Question
           </button>
-          <button
-            className="px-4 py-2 ml-2 mb-4 bg-red-700 text-white rounded-md"
+          <ChakraButton
+            className="px-4 py-2 ml-2  bg-red-700 text-white font-semibold rounded-md"
             type="submit"
+            isLoading={loading}
           >
             Submit
-          </button>
+          </ChakraButton>
         </form>
       </div>
     </div>

@@ -330,7 +330,7 @@ const Course = () => {
                       className="text-[12px] md:text-[14px] mt-2 flex gap-1 items-center"
                     >
                       <span className="font-[600] cursor-pointer">
-                        {assignment.title}
+                        Assignment {index}
                       </span>
                     </h1>
                   ))}
@@ -372,11 +372,11 @@ const Course = () => {
                 } `}
               >
                 {patoggle &&
-                  progAssignments.map((assignment, index) => (
+                  pa.map((assignment, index) => (
                     <h1
                       onClick={() => {
                         navigate(
-                          `/user-dashboard/courses/${params.courseId}/pa/${assignment}`
+                          `/user-dashboard/courses/${params.courseId}/pa/${assignment._id}`
                         );
                         setIsSliderOpen(!isSliderOpen);
                       }}
@@ -384,7 +384,7 @@ const Course = () => {
                       className="text-[12px] md:text-[14px] mt-2 flex gap-1 items-center"
                     >
                       <span className="font-[600] cursor-pointer">
-                        {assignment}
+                        PA {index}
                       </span>
                     </h1>
                   ))}

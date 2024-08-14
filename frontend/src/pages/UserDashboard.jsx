@@ -87,7 +87,7 @@ const UserDashboard = () => {
                     navigate(`/user-dashboard/courses/${course._id}`)
                   }
                   key={index}
-                  className="border border-gray-400 rounded-xl flex items-center justify-center h-[200px] w-[200px] bg-red-700"
+                  className="border hover:cursor-pointer border-gray-400 rounded-xl flex items-center justify-center h-[200px] w-[200px] bg-red-700"
                 >
                   <h1 className="text-white">{course.title}</h1>
                 </div>

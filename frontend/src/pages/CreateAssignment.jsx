@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { ApiUrl } from "../config";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 const CreateAssignment = () => {
   const navigate = useNavigate();
@@ -70,6 +71,7 @@ const CreateAssignment = () => {
       console.log(response.data);
       setLoading(false);
       navigate("/");
+      toast.success("Assignment Created");
     } catch (error) {
       setLoading(false);
       console.error(error);

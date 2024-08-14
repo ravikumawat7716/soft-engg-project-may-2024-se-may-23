@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { ApiUrl } from "../config";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 const AddLecture = () => {
   const navigate = useNavigate();
@@ -42,6 +43,7 @@ const AddLecture = () => {
     try {
       const response = await axios.post(`${ApiUrl}/lectures`, data);
       console.log(response.data);
+      toast.success("Lecture Added");
       navigate("/");
     } catch (error) {
       console.error(error);

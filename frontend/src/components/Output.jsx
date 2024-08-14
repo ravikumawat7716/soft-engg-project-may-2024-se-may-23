@@ -80,10 +80,6 @@ const Output = ({ editorRef, language, testCases }) => {
           isError ? "text-red-500" : "text-green-500"
         }`}
         height="75vh"
-        p={2}
-        border="1px solid"
-        borderRadius={4}
-        borderColor={isError ? "red.500" : "#333"}
       >
         {testResults && (
           <Text>

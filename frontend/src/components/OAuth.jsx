@@ -36,6 +36,7 @@ const OAuth = () => {
       dispatch(googleSignIN(data))
         .then((res) => {
           console.log(res);
+          console.log(res.type);
           navigate("/user-dashboard");
           toast.success("Sign In Successfully");
         })

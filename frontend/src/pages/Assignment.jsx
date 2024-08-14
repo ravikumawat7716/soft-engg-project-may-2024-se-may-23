@@ -139,20 +139,6 @@ const Assignment = () => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [count]);
 
-  // const sendMessage = () => {
-  //   if (newMessage.trim() !== "") {
-  //     setMessages([...messages, { from: "user", text: newMessage }]);
-  //     setNewMessage("");
-  //     setTimeout(() => {
-  //       setMessages((prevMessages) => [
-  //         ...prevMessages,
-  //         { from: "bot", text: "This is a simulated response." },
-  //       ]);
-  //     }, 1000);
-  //     adjustTextareaHeight();
-  //   }
-  // };
-
   const handleInputChange = (e) => {
     setNewMessage(e.target.value);
     adjustTextareaHeight();
@@ -222,22 +208,29 @@ const Assignment = () => {
                       </div>
                     ))}
                   {question.type === "msq" &&
-                    question.options.map((option, optionIndex) => (
-                      <div key={optionIndex} className="flex items-center mb-2">
-                        <input
-                          type="checkbox"
-                          value={optionIndex}
-                          checked={selectedMultiOptions[index]?.includes(
-                            optionIndex
-                          )}
-                          onChange={(e) =>
-                            handleMultiOptionChange(index, e.target.value)
-                          }
-                          className="mr-2"
-                        />
-                        <label className="text-gray-700">{option}</label>
-                      </div>
-                    ))}
+                    question.options.map((option, optionIndex) => {
+                      const isChecked =
+                        selectedMultiOptions[index]?.includes(optionIndex) ||
+                        false;
+
+                      return (
+                        <div
+                          key={optionIndex}
+                          className="flex items-center mb-2"
+                        >
+                          <input
+                            type="checkbox"
+                            value={optionIndex}
+                            checked={isChecked}
+                            onChange={(e) =>
+                              handleMultiOptionChange(index, optionIndex)
+                            }
+                            className="mr-2"
+                          />
+                          <label className="text-gray-700">{option}</label>
+                        </div>
+                      );
+                    })}
                   {question.type === "subjective" && (
                     <textarea
                       value={subjectiveAnswers[index]}

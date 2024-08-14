@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { ApiUrl } from "../config";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 const CreatePA = () => {
   const navigate = useNavigate();
@@ -40,9 +41,13 @@ const CreatePA = () => {
     console.log(data);
 
     try {
-      //   const response = await axios.post(`${ApiUrl}/pa/create`, data);
-      //   console.log(response.data);
-      //   navigate("/");
+      const response = await axios.post(
+        `${ApiUrl}/programming_assignments`,
+        data
+      );
+      console.log(response.data);
+      toast.success("Programming Assignment Added");
+      navigate("/");
     } catch (error) {
       console.error(error);
     }

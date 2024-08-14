@@ -1,142 +1,94 @@
-import React, { useEffect, useState } from "react";
-import { useForm, useFieldArray, Controller } from "react-hook-form";
+import React, { useState } from "react";
 import axios from "axios";
-import {
-  TextField,
-  Button,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
-} from "@mui/material";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+
 import { ApiUrl } from "../config";
 import { useNavigate } from "react-router-dom";
+import * as yup from "yup";
+import { Button } from "@chakra-ui/react";
+import { ToastContainer, toast } from "react-toastify";
 
-const CreatePA = () => {
+const courseSchema = yup.object({
+  title: yup.string().min(5).max(30).required(),
+  description: yup.string().required(),
+});
+
+const CreateCourse = () => {
   const navigate = useNavigate();
-  const { register, handleSubmit, control, reset } = useForm({
-    defaultValues: {
-      title: "",
-      courseId: "",
-      testCases: [{ input: "", expectedOutput: "" }],
-    },
+  const [loading, setLoading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm({
+    resolver: yupResolver(courseSchema),
   });
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "testCases",
-  });
 
-  const [courses, setCourses] = useState([]);
-
-  useEffect(() => {
-    const getCourses = async () => {
-      const res = await axios.get(`${ApiUrl}/courses`);
-      setCourses(res.data);
-    };
-    getCourses();
-  }, []);
-
-  const onSubmit = async (data) => {
-    console.log(data);
-
-    try {
-      const response = await axios.post(
-        `${ApiUrl}/programming_assignments`,
-        data
-      );
-      console.log(response.data);
-      navigate("/");
-    } catch (error) {
-      console.error(error);
-    }
+  const onSubmit = async (payload) => {
+    setLoading(true);
+    const res = await axios.post(`${ApiUrl}/courses`, payload);
+    console.log(res.data);
+    setLoading(false);
+    toast.success("Course Added");
+    navigate("/");
   };
+
+  const inputClass =
+    "border border-red-400 rounded-md text-gray-700 font-[600] h-10 p-4 w-full  bg-transparent outline-none ";
 
   return (
     <div className="flex justify-center">
       <div className="w-[500px]">
-        <h2 className="font-[800] text-gray-800 text-[20px] mt-4 text-center">
-          Create a Programming Assignment
-        </h2>
+        <h1 className="font-bold text-[22px] text-gray-800 mt-4 text-center">
+          Add new Course
+        </h1>
+
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div>
-            <TextField
-              label="Title"
-              {...register("title", { required: true })}
-              fullWidth
-              margin="normal"
+          <div className="mt-5">
+            <label className="font-semibold text-[18px] mb-4">Title</label>
+            <input
+              type="text"
+              placeholder="Enter Course Title"
+              className={inputClass}
+              {...register("title")}
             />
+            <span className="text-red-500 font-semibold">
+              {errors.title?.message}
+            </span>
           </div>
 
-          <div>
-            <FormControl fullWidth margin="normal">
-              <InputLabel id="course-label">Course</InputLabel>
-              <Controller
-                name="courseId"
-                control={control}
-                render={({ field }) => (
-                  <Select {...field} labelId="course-label" label="Course">
-                    {courses.map((course) => (
-                      <MenuItem key={course._id} value={course._id}>
-                        {course.title}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                )}
-              />
-            </FormControl>
+          <div className="mt-5">
+            <label className="font-semibold text-[18px] mb-4">
+              Description
+            </label>
+            <textarea
+              rows="4"
+              placeholder="Enter Description"
+              className={inputClass}
+              style={{ height: "auto" }} // Adjust 'auto' or any specific height if needed
+              {...register("description")}
+            />
+            <span className="text-red-500 font-semibold">
+              {errors.description?.message}
+            </span>
           </div>
 
-          <div>
-            <h3>Test Cases</h3>
-            {fields.map((item, index) => (
-              <div key={item.id} style={{ marginBottom: "1rem" }}>
-                <TextField
-                  label={`Input ${index + 1}`}
-                  {...register(`testCases.${index}.input`, { required: true })}
-                  fullWidth
-                  margin="normal"
-                />
-                <TextField
-                  label={`Expected Output ${index + 1}`}
-                  {...register(`testCases.${index}.expectedOutput`, {
-                    required: true,
-                  })}
-                  fullWidth
-                  margin="normal"
-                />
-                <Button
-                  type="button"
-                  onClick={() => remove(index)}
-                  variant="contained"
-                  color="error"
-                  style={{ marginTop: "0.5rem" }}
-                >
-                  Remove
-                </Button>
-              </div>
-            ))}
+          <div className="mt-5">
             <Button
-              type="button"
-              onClick={() => append({ input: "", expectedOutput: "" })}
-              variant="contained"
-              color="primary"
+              className="bg-red-500 w-full p-2 h-10 rounded-lg text-white font-semibold text-[18px]"
+              isLoading={loading}
+              type="submit"
             >
-              Add Test Case
+              SUBMIT
             </Button>
           </div>
-
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            style={{ marginTop: "1rem" }}
-          >
-            Submit
-          </Button>
         </form>
       </div>
     </div>
   );
 };
 
-export default CreatePA;
+export default CreateCourse;

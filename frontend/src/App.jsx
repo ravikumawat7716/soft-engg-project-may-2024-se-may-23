@@ -34,7 +34,7 @@ function App() {
     if (currentUser) {
       return element;
     } else {
-      return <Navigate to="/login" />;
+      return <Navigate to="/signin" />;
     }
   };
 
@@ -51,7 +51,10 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
-            <Route path="/" element={<UserDashboard />} />
+            <Route
+              path="/"
+              element={<UserRoute element={<UserDashboard />} />}
+            />
             <Route
               path="/create-course"
               element={<InstructorRoute element={<CreateCourse />} />}

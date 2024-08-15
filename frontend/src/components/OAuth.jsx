@@ -12,46 +12,38 @@ const OAuth = () => {
   const navigate = useNavigate();
 
   const handleGoogleClick = async () => {
-    try {
-      const provider = new GoogleAuthProvider();
-      const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+    const auth = getAuth(app);
 
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
 
-      console.log(user);
+    console.log(user);
 
-      console.log(user.photoURL);
+    console.log(user.photoURL);
 
-      const rollNo = user.email.split("@")[0];
+    const rollNo = user.email.split("@")[0];
 
-      const data = {
-        name: user.displayName,
-        email: user.email,
-        photo: user.photoURL,
-        roll_no: rollNo,
-        role: "Student",
-      };
+    const data = {
+      name: user.displayName,
+      email: user.email,
+      photo: user.photoURL,
+      roll_no: rollNo,
+      role: "Student",
+    };
 
-      dispatch(googleSignIN(data))
-        .then((res) => {
-          console.log(res);
-          console.log(res.type);
-          navigate("/user-dashboard");
-          toast.success("Sign In Successfully");
-        })
-        .catch((error) => {
-          console.log("Dispatch error:", error);
-          toast.error("Failed to sign in. Please try again.");
-        });
+    await dispatch(googleSignIN(data))
+      .then((res) => {
+        console.log(res);
+        console.log(res.type);
 
-      // else {
-      //   toast.error("You are not a member of the IITM community.");
-      // }
-    } catch (error) {
-      console.log("Could not sign in with Google", error);
-      toast.error("Could not sign in with Google. Please try again.");
-    }
+        navigate("/");
+        toast.success("Sign In Successfully");
+      })
+      .catch((error) => {
+        console.log("Dispatch error:", error);
+        toast.error("Failed to sign in. Please try again.");
+      });
   };
 
   return (

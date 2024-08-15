@@ -20,7 +20,7 @@ const Navbar = () => {
         <div>
           <GiEgyptianBird className="h-[24px] w-[24px]" />
         </div>
-        <span className="font-[700] text-[18px]">Coursera</span>
+        <Link to="/" className="font-[700] text-[18px]">Coursera</Link>
       </div>
 
       <div className="flex items-center gap-6">

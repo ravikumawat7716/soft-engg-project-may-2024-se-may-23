@@ -41,7 +41,7 @@ const InstructorPage = () => {
           </button>
         </nav>
         <div className="p-4 text-sm text-center bg-gray-900">
-          © 2024 Your Company
+          © SE Team 23 , IITM 2024
         </div>
       </aside>
 

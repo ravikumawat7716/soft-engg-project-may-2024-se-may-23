@@ -172,7 +172,11 @@ const Lecture = () => {
               isModalOpen ? "w-[90%] md:w-[60%]" : "w-full"
             } flex flex-col gap-2 transition-all duration-500`}
           >
-            <div className="w-full h-[60%] border  border-gray-400 rounded-md flex justify-center items-center">
+            <div
+              className={`w-full ${
+                summery ? "h-[60%]" : "h-[90%]"
+              } border border-gray-400 rounded-md flex justify-center items-center`}
+            >
               <iframe
                 width="100%"
                 height="100%"

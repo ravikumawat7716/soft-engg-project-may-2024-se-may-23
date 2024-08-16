@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
-// import { GiArtificialHive } from "react-icons/gi";
 import LLmSelect from "../components/LLMSelect";
 import axios from "axios";
 import { ApiUrl } from "../config";

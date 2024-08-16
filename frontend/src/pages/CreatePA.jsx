@@ -31,7 +31,7 @@ const CreatePA = () => {
 
   useEffect(() => {
     const getCourses = async () => {
-      const res = await axios.get(`${ApiUrl}/courses/all`);
+      const res = await axios.get(`${ApiUrl}/courses`);
       setCourses(res.data);
     };
     getCourses();
@@ -56,7 +56,7 @@ const CreatePA = () => {
   return (
     <div className="flex justify-center">
       <div className="w-[500px]">
-        <h2>Create PA</h2>
+        <h2 className="text-[18px] font-semibold mt-[20px]">Create PA</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div>
             <TextField

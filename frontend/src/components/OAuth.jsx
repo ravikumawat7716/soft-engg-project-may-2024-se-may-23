@@ -29,7 +29,7 @@ const OAuth = () => {
       email: user.email,
       photo: user.photoURL,
       roll_no: rollNo,
-      role: "Student",
+      role: "student",
     };
 
     await dispatch(googleSignIN(data))

@@ -90,6 +90,7 @@ const CreateAssignment = () => {
             <Controller
               name="courseId"
               control={control}
+              rules={{ required: "Course is required" }}
               render={({ field }) => (
                 <Select {...field} labelId="course-label" label="Course">
                   {courses.map((course) => (
@@ -116,6 +117,7 @@ const CreateAssignment = () => {
                   <Controller
                     name={`questions.${index}.type`}
                     control={control}
+                    rules={{ required: "Question type is required" }}
                     render={({ field }) => (
                       <Select
                         {...field}
@@ -143,7 +145,9 @@ const CreateAssignment = () => {
                   fullWidth
                   margin="normal"
                   label="Question"
-                  {...register(`questions.${index}.question`)}
+                  {...register(`questions.${index}.question`, {
+                    required: "Question is required",
+                  })}
                 />
                 {(type === "mcq" || type === "msq") && (
                   <>
@@ -154,7 +158,8 @@ const CreateAssignment = () => {
                         margin="normal"
                         label={`Option ${optionIndex + 1}`}
                         {...register(
-                          `questions.${index}.options.${optionIndex}`
+                          `questions.${index}.options.${optionIndex}`,
+                          { required: "Option is required" }
                         )}
                       />
                     ))}
@@ -175,7 +180,9 @@ const CreateAssignment = () => {
                   fullWidth
                   margin="normal"
                   label="Answer"
-                  {...register(`questions.${index}.answer`)}
+                  {...register(`questions.${index}.answer`, {
+                    required: "Answer is required",
+                  })}
                 />
                 <Button type="button" onClick={() => remove(index)}>
                   Remove Question

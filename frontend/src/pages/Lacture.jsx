@@ -55,9 +55,20 @@ const Lecture = () => {
         topic: lecture.title,
         email: currentUser.email,
       });
+
       const doc = new jsPDF();
-      doc.text(res.data.result, 10, 10);
+      const margin = 10;
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const maxLineWidth = pageWidth - margin * 2;
+
+      // Split text into lines that fit within the max width
+      const lines = doc.splitTextToSize(res.data.result, maxLineWidth);
+
+      // Add the lines to the PDF
+      doc.text(lines, margin, margin);
+
       doc.save(`${lecture.title}.pdf`);
+
       toast({
         title: "Notes generated successfully",
         status: "success",
@@ -101,7 +112,7 @@ const Lecture = () => {
   const sendMessage = async (e) => {
     e.preventDefault();
     if (newMessage.trim() === "") return;
-    
+
     setLoading(true);
     const updatedChatbot = [...chatbot, { role: "user", content: newMessage }];
     setChatBot(updatedChatbot);
@@ -153,7 +164,9 @@ const Lecture = () => {
           transition={{ delay: 0.2 }}
           className="flex flex-col md:flex-row justify-between items-center mb-6"
         >
-          <h1 className="font-bold text-2xl text-gray-800 mb-4 md:mb-0">{lecture.title}</h1>
+          <h1 className="font-bold text-2xl text-gray-800 mb-4 md:mb-0">
+            {lecture.title}
+          </h1>
           <div className="flex space-x-4">
             <Tooltip label="Generate Notes" placement="top">
               <Button
@@ -179,7 +192,7 @@ const Lecture = () => {
           </div>
         </motion.div>
       )}
-      
+
       {lecture && (
         <div className="flex flex-col md:flex-row gap-6">
           <motion.div
@@ -187,7 +200,10 @@ const Lecture = () => {
             className={`video-div ${isModalOpen ? "w-full md:w-3/5" : "w-full"} 
             bg-white rounded-lg shadow-md overflow-hidden transition-all duration-500 ease-in-out`}
           >
-            <div className="aspect-w-16 aspect-h-9" style={{ height: "500px" }}>
+            <div
+              className="aspect-w-16 aspect-h-9"
+              style={{ height: summery ? "250px" : "500px" }}
+            >
               <iframe
                 src={`https://www.youtube.com/embed/${lecture.youtubeId}`}
                 title="YouTube video player"
@@ -269,11 +285,16 @@ const Lecture = () => {
                     <div ref={scrollRef} />
                   </div>
                   <div className="p-4 border-t border-gray-200">
-                    <form onSubmit={sendMessage} className="flex items-center">
+                    <form
+                      onSubmit={sendMessage}
+                      className="flex items-center gap-4"
+                    >
                       <textarea
                         value={newMessage}
                         onChange={handleInputChange}
-                        onKeyPress={(e) => e.key === "Enter" && !e.shiftKey && sendMessage(e)}
+                        onKeyPress={(e) =>
+                          e.key === "Enter" && !e.shiftKey && sendMessage(e)
+                        }
                         placeholder="Type your message..."
                         className="flex-1 p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         rows="1"

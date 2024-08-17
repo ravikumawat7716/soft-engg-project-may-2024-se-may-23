@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaVideo, FaBars } from "react-icons/fa";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { IoIosArrowDown } from "react-icons/io";
 import { HiMiniComputerDesktop } from "react-icons/hi2";
 import { ImCross } from "react-icons/im";
 import { MdAssignment } from "react-icons/md";
-import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Outlet } from "react-router-dom";
 import axios from "axios";
 import { ApiUrl } from "../config";
 
@@ -54,7 +54,9 @@ const Course = () => {
         animate={{ rotate: isOpen ? 180 : 0 }}
         transition={{ duration: 0.3 }}
       >
-        <IoIosArrowDown className={isOpen ? "text-indigo-600" : "text-gray-400"} />
+        <IoIosArrowDown
+          className={isOpen ? "text-indigo-600" : "text-gray-400"}
+        />
       </motion.div>
     </motion.div>
   );
@@ -82,7 +84,7 @@ const Course = () => {
   );
 
   const SidebarContent = ({ isMobile = false }) => (
-    <div className={`flex flex-col space-y-4 p-4 ${isMobile ? 'mt-16' : ''}`}>
+    <div className={`flex flex-col space-y-4 p-4 ${isMobile ? "mt-16" : ""}`}>
       {isMobile && (
         <motion.button
           whileTap={{ scale: 0.95 }}
@@ -93,9 +95,28 @@ const Course = () => {
         </motion.button>
       )}
       {[
-        { key: 'lectures', icon: <FaVideo />, text: 'Lectures', data: lectures },
-        { key: 'assignments', icon: <MdAssignment />, text: 'Assignments', data: assignments },
-        { key: 'pa', icon: <HiMiniComputerDesktop />, text: 'Programming Assignments', data: pa },
+        {
+          key: "lectures",
+          icon: <FaVideo />,
+          text: "Lectures",
+          data: lectures,
+        },
+        {
+          key: "assignments",
+          icon: <MdAssignment />,
+          text: "Assignments",
+          data: assignments,
+        },
+        ...(pa.length > 0
+          ? [
+              {
+                key: "pa",
+                icon: <HiMiniComputerDesktop />,
+                text: "Programming Assignments",
+                data: pa,
+              },
+            ]
+          : []),
       ].map(({ key, icon, text, data }) => (
         <div key={key}>
           <ToggleButton
@@ -108,8 +129,16 @@ const Course = () => {
             {activeSection === key && (
               <ContentList
                 items={data}
-                onItemClick={(item) => navigate(`/user-dashboard/courses/${params.courseId}/${key}/${item._id}`)}
-                renderItem={(item, index) => <span>{item.title || `${text.slice(0, -1)} ${index + 1}`}</span>}
+                onItemClick={(item) =>
+                  navigate(
+                    `/user-dashboard/courses/${params.courseId}/${key}/${item._id}`
+                  )
+                }
+                renderItem={(item, index) => (
+                  <span>
+                    {item.title || `${text.slice(0, -1)} ${index + 1}`}
+                  </span>
+                )}
               />
             )}
           </AnimatePresence>

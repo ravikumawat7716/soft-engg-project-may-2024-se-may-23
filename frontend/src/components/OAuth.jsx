@@ -50,7 +50,7 @@ const OAuth = () => {
     <>
       <button
         onClick={handleGoogleClick}
-        className="mx-auto flex items-center gap-2 py-2 px-5 bg-red-700 rounded-full hover:bg-purple-500 text-white"
+        className="mx-auto flex items-center gap-2 py-2 px-5 bg-indigo-600 rounded-full hover:bg-indigo-400 text-white"
       >
         <span className="text-[20px]">
           <FcGoogle />

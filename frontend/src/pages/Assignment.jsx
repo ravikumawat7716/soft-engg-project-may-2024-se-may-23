@@ -162,7 +162,7 @@ const Assignment = () => {
           animate={{ opacity: 1, y: 0 }}
           className="font-semibold text-lg text-gray-800"
         >
-          Assignment1
+          Assignment
         </motion.h1>
 
         <motion.button
@@ -324,7 +324,9 @@ const Assignment = () => {
                     <textarea
                       value={newMessage}
                       onChange={handleInputChange}
-                      onKeyPress={(e) => e.key === "Enter" && !e.shiftKey && sendMessage(e)}
+                      onKeyPress={(e) =>
+                        e.key === "Enter" && !e.shiftKey && sendMessage(e)
+                      }
                       placeholder="Type your message..."
                       className="flex-1 p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       rows="1"

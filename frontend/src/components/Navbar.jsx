@@ -60,14 +60,14 @@ const Navbar = () => {
         {currentUser ? (
           <button
             onClick={logoutUser}
-            className="px-4 font-[700] py-2 border border-gray-400 rounded-full hover:text-white hover:bg-red-700"
+            className="px-4 font-[700] py-2 border border-gray-400 rounded-full hover:text-white hover:bg-indigo-600"
           >
             Sign Out
           </button>
         ) : (
           <button
             onClick={() => navigate("/signin")}
-            className="px-4 font-[700] py-2 border border-gray-400 rounded-full hover:text-white hover:bg-red-700"
+            className="px-4 font-[700] py-2 border border-gray-400 rounded-full hover:text-white hover:bg-indigo-600"
           >
             Sign In
           </button>

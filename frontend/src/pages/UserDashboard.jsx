@@ -35,7 +35,7 @@ const UserDashboard = () => {
 
         setDocuments([
           { id: 1, title: "Aadhar Card", downloadUrl: "/images.png" },
-          { id: 2, title: "Grade Card", downloadUrl: "/images(1).png" },
+          { id: 2, title: "Grade Card", downloadUrl: "/images (1).png" },
         ]);
       } catch (error) {
         console.error("Error fetching data:", error);

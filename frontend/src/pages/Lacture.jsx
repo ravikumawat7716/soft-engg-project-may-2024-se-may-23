@@ -194,7 +194,7 @@ const Lecture = () => {
                 onClick={videoSummery}
                 isLoading={isSummeryLoading}
               >
-                Video Summery
+                Video Summary
               </Button>
               {summery && <h1 className="mt-4 font-semibold">{summery}</h1>}
             </div>

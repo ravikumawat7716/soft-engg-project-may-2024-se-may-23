@@ -18,18 +18,30 @@ const features = [
 const UserDashboard = () => {
   const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
+  const [certificates, setCertificates] = useState([]);
+  const [documents, setDocuments] = useState([]);
   const [activeFeature, setActiveFeature] = useState("My Courses");
 
   useEffect(() => {
-    const getCourses = async () => {
+    const fetchData = async () => {
       try {
-        const res = await axios.get(`${ApiUrl}/courses`);
-        setCourses(res.data);
+        const coursesRes = await axios.get(`${ApiUrl}/courses`);
+        setCourses(coursesRes.data);
+
+        setCertificates([
+          { id: 1, title: "Web Development Certificate", image: "/OIP.jpeg" },
+          { id: 2, title: "Data Science Certificate", image: "/Data-Science-Certificate-page-001.jpg" },
+        ]);
+
+        setDocuments([
+          { id: 1, title: "Aadhar Card"},
+          { id: 2, title: "Grade Card"},
+        ]);
       } catch (error) {
-        console.error("Error fetching courses:", error);
+        console.error("Error fetching data:", error);
       }
     };
-    getCourses();
+    fetchData();
   }, []);
 
   const containerVariants = {
@@ -48,6 +60,89 @@ const UserDashboard = () => {
       y: 0,
       opacity: 1,
     },
+  };
+
+  const renderContent = () => {
+    switch (activeFeature) {
+      case "My Courses":
+        return (
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {courses.map((course, index) => (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                whileHover={{ scale: 1.05, boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.1)" }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate(`/user-dashboard/courses/${course._id}`)}
+                className="bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transition-all duration-300"
+              >
+                <div className="h-32 bg-gradient-to-r from-indigo-500 to-purple-600" />
+                <div className="p-4">
+                  <h3 className="font-semibold text-lg mb-2 text-gray-800">{course.title}</h3>
+                  <p className="text-sm text-gray-600">
+                    {course.description || "No description available"}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        );
+      case "My Certificates":
+        return (
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {certificates.map((certificate, index) => (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                whileHover={{ scale: 1.05, boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.1)" }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transition-all duration-300"
+              >
+                <img src={certificate.image} alt={certificate.title} className="w-full h-40 object-cover" />
+                <div className="p-4">
+                  <h3 className="font-semibold text-lg mb-2 text-gray-800">{certificate.title}</h3>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        );
+      case "Documents for download":
+        return (
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="space-y-4"
+          >
+            {documents.map((document, index) => (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                whileHover={{ scale: 1.02, boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)" }}
+                whileTap={{ scale: 0.98 }}
+                className="bg-white rounded-lg p-4 shadow-md cursor-pointer transition-all duration-300"
+              >
+                <a href={document.url} download className="flex items-center justify-between">
+                  <span className="font-medium text-indigo-600">{document.title}</span>
+                  <FiActivity className="text-gray-500" />
+                </a>
+              </motion.div>
+            ))}
+          </motion.div>
+        );
+      default:
+        return null;
+    }
   };
 
   return (
@@ -96,31 +191,7 @@ const UserDashboard = () => {
         >
           {activeFeature}
         </motion.h2>
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          {courses.map((course, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              whileHover={{ scale: 1.05, boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.1)" }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => navigate(`/user-dashboard/courses/${course._id}`)}
-              className="bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transition-all duration-300"
-            >
-              <div className="h-32 bg-gradient-to-r from-indigo-500 to-purple-600" />
-              <div className="p-4">
-                <h3 className="font-semibold text-lg mb-2 text-gray-800">{course.title}</h3>
-                <p className="text-sm text-gray-600">
-                  {course.description || "No description available"}
-                </p>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+        {renderContent()}
       </div>
     </div>
   );

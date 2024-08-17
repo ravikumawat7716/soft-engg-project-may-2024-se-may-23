@@ -5,27 +5,24 @@ import { ApiUrl } from "../config";
 import { useSelector } from "react-redux";
 import Loading from "../components/Loading";
 import { Button } from "@chakra-ui/react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaRobot } from "react-icons/fa";
+import { IoMdSend } from "react-icons/io";
 
 const Assignment = () => {
   const params = useParams();
-
   const { currentUser } = useSelector((state) => state.auth);
-
   const [questions, setQuestions] = useState(null);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const textareaRef = useRef(null);
-
   const [loading, setLoading] = useState(false);
   const [chatbot, setChatBot] = useState(null);
-
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [selectedMultiOptions, setSelectedMultiOptions] = useState([]);
   const [subjectiveAnswers, setSubjectiveAnswers] = useState([]);
   const [score, setScore] = useState(null);
-
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -39,16 +36,13 @@ const Assignment = () => {
     setLoading(true);
     if (newMessage.trim() !== "") {
       setNewMessage("");
-
       const data = {
         chat: newMessage,
         email: currentUser.email,
       };
-
       if (chat_id !== null) {
         data.chat_id = chat_id;
       }
-
       const res = await axios({
         url: `${ApiUrl}/chatbot`,
         method: "POST",
@@ -57,12 +51,10 @@ const Assignment = () => {
           "Content-Type": "application/json",
         },
       });
-
       console.log(res.data.chat);
       localStorage.setItem("chat_id", res.data._id);
       setChatBot(res.data.chat);
       setLoading(false);
-
       adjustTextareaHeight();
       setCount(count + 1);
     }
@@ -153,9 +145,7 @@ const Assignment = () => {
   const getAssignment = async () => {
     console.log("getting assignment");
     const res = await axios(`${ApiUrl}/assignment/${params.assignmentId}`);
-
     console.log(res.data);
-
     setQuestions(res.data.questions);
   };
 
@@ -165,31 +155,51 @@ const Assignment = () => {
   }, [params.assignmentId]);
 
   return (
-    <div className="ml-2 ">
+    <div className="ml-2">
       <div className="flex mt-8 w-full justify-between">
-        <h1 className="font-semibold text-lg">Assignment1</h1>
+        <motion.h1
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="font-semibold text-lg text-gray-800"
+        >
+          Assignment1
+        </motion.h1>
 
-        <button
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={toggleModal}
-          className="mb-4 px-4 py-2 text-sm bg-red-700 text-white rounded-full transition-colors duration-300"
+          className="mb-4 px-4 py-2 text-sm bg-indigo-600 text-white rounded-full transition-colors duration-300"
         >
           AI Support
-        </button>
+        </motion.button>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-3 w-full transition-all duration-500 ">
-        <div
+      <div className="flex flex-col md:flex-row gap-3 w-full transition-all duration-500">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           className={`video-div ${
             isModalOpen ? "w-[90%] md:w-[60%]" : "w-full"
           } flex flex-col gap-2 transition-all duration-500`}
         >
           {/* Questions are here */}
 
-          <div className="max-w-xl  p-5 bg-white rounded-lg shadow-md">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-xl p-5 bg-white rounded-lg shadow-md"
+          >
             {questions &&
               questions.map((question, index) => (
-                <div key={index} className="mb-6">
-                  <h2 className="text-xl font-semibold mb-3">
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="mb-6"
+                >
+                  <h2 className="text-xl font-semibold mb-3 text-gray-800">
                     {question.question}
                   </h2>
                   {question.type === "mcq" &&
@@ -202,9 +212,9 @@ const Assignment = () => {
                           onChange={(e) =>
                             handleOptionChange(index, e.target.value)
                           }
-                          className="mr-2"
+                          className="mr-2 text-pink-500 focus:ring-pink-500"
                         />
-                        <label className="text-gray-700">{option}</label>
+                        <label className="text-gray-600">{option}</label>
                       </div>
                     ))}
                   {question.type === "msq" &&
@@ -225,9 +235,9 @@ const Assignment = () => {
                             onChange={(e) =>
                               handleMultiOptionChange(index, optionIndex)
                             }
-                            className="mr-2"
+                            className="mr-2 bg-indigo-500 focus:ring-pink-500"
                           />
-                          <label className="text-gray-700">{option}</label>
+                          <label className="text-gray-600">{option}</label>
                         </div>
                       );
                     })}
@@ -237,85 +247,103 @@ const Assignment = () => {
                       onChange={(e) =>
                         handleSubjectiveChange(index, e.target.value)
                       }
-                      className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-700"
+                      className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-gray-800"
                       rows="1"
                     />
                   )}
-                </div>
+                </motion.div>
               ))}
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={handleSubmit}
-              className="w-full py-2 px-4 bg-red-700 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+              className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-75"
             >
               Submit
-            </button>
+            </motion.button>
             {score !== null && (
-              <div className="mt-6">
-                <h2 className="text-2xl font-bold">
-                  Your score: {score}/{questions.length}
-                </h2>
-              </div>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-4 text-center"
+              >
+                <p className="text-xl font-semibold text-gray-800">
+                  Your score: {score} / {questions.length}
+                </p>
+              </motion.div>
             )}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
-        <div
-          className={`chat-bot-div ${
-            isModalOpen ? "w-[90%] h-[600px] md:w-[40%]" : "hidden"
-          } border-2 border-gray-400 rounded-md h-[500px] flex flex-col transition-all duration-500`}
-        >
-          <div className="flex-1 p-4 overflow-y-auto">
-            {chatbot && chatbot.length > 0 ? (
-              chatbot.map((chat, index) => (
-                <div key={index}>
-                  <div className="mb-2 flex flex-col gap-1">
-                    {chat.role === "user" && (
-                      <h1 className="font-semibold text-[16px]">
-                        User : {chat.content}
-                      </h1>
-                    )}
-                    {chat.role === "assistant" && (
-                      <h1 className="font-semibold text-[16px]">
-                        <span className="text-[18px]">🤖</span>: {chat.content}
-                      </h1>
-                    )}
-                  </div>
+        <AnimatePresence>
+          {isModalOpen && (
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              className="chat-bot-div w-full md:w-2/5 bg-white rounded-lg shadow-md overflow-hidden"
+            >
+              <div className="h-[500px] flex flex-col">
+                <div className="flex-1 p-4 overflow-y-auto">
+                  {chatbot && chatbot.length > 0 ? (
+                    chatbot.map((chat, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className={`mb-4 ${
+                          chat.role === "user" ? "text-right" : "text-left"
+                        }`}
+                      >
+                        <div
+                          className={`inline-block p-3 rounded-lg ${
+                            chat.role === "user"
+                              ? "bg-blue-500 text-white"
+                              : "bg-gray-200 text-gray-800"
+                          }`}
+                        >
+                          {chat.content}
+                        </div>
+                      </motion.div>
+                    ))
+                  ) : (
+                    <div className="h-full flex items-center justify-center">
+                      <div className="text-center">
+                        <FaRobot className="text-6xl text-gray-400 mb-4 mx-auto" />
+                        <p className="text-xl font-semibold text-gray-600">
+                          Hi User, I'm your AI assistant. How can I help you?
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  <div ref={scrollRef} />
                 </div>
-              ))
-            ) : (
-              <div className="h-full w-full flex items-center justify-center">
-                <div className="flex flex-col gap-2">
-                  <span className="text-center text-4xl">
-                    <span className="icon-large">🤖</span>
-                  </span>
-                  <span className="font-semibold text-[18px]">
-                    Hi User, I am AI ChatBot. How can I help you?
-                  </span>
+                <div className="p-4 border-t border-gray-200">
+                  <form onSubmit={sendMessage} className="flex items-center">
+                    <textarea
+                      value={newMessage}
+                      onChange={handleInputChange}
+                      onKeyPress={(e) => e.key === "Enter" && !e.shiftKey && sendMessage(e)}
+                      placeholder="Type your message..."
+                      className="flex-1 p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      rows="1"
+                      ref={textareaRef}
+                    />
+                    <Button
+                      type="submit"
+                      isLoading={loading}
+                      colorScheme="blue"
+                      className="rounded-r-md"
+                    >
+                      <IoMdSend />
+                    </Button>
+                  </form>
                 </div>
               </div>
-            )}
-            <div ref={scrollRef}></div>
-          </div>
-          <div className="mb-2">{loading && <Loading />}</div>
-          <div className="p-4 border-t border-gray-300 flex">
-            <textarea
-              value={newMessage}
-              onChange={handleInputChange}
-              onKeyUp={(e) => e.key === "Enter" && sendMessage()}
-              placeholder="Type your query..."
-              className="flex-1 p-2 outline-none border px-4 py-2 text-sm font-semibold rounded-md resize-none overflow-hidden"
-              rows="1"
-              ref={textareaRef}
-            ></textarea>
-            <Button
-              onClick={sendMessage}
-              className="ml-2 px-4 py-2 text-white bg-red-700 rounded-md transition-colors duration-300"
-              isLoading={loading}
-            >
-              Go
-            </Button>
-          </div>
-        </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

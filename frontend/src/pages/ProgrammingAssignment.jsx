@@ -3,10 +3,10 @@ import { useParams } from "react-router-dom";
 import CodeEditor from "../components/CodeEditor";
 import axios from "axios";
 import { ApiUrl } from "../config";
+import { motion } from "framer-motion";
 
 const ProgrammingAssignment = () => {
   const params = useParams();
-  console.log(params.pa_id);
   const [pa, setPa] = useState(null);
 
   const { courseId, ProgrammingAssignmentId } = useParams();
@@ -46,7 +46,6 @@ const ProgrammingAssignment = () => {
 
   const getCoursePA = async () => {
     const res = await axios(`${ApiUrl}/programming_assignment/${params.pa_id}`);
-    console.log(res.data);
     setPa(res.data);
   };
 
@@ -55,15 +54,28 @@ const ProgrammingAssignment = () => {
   }, [params.pa_id]);
 
   return (
-    <div className=" ml-6">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="ml-6"
+    >
       {pa && (
         <div>
           <div className="flex mt-4 w-full justify-between">
-            <h1 className="font-semibold text-lg">{pa.title}</h1>
+            <motion.h1
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="font-semibold text-lg"
+            >
+              {pa.title}
+            </motion.h1>
+            
           </div>
 
           <div className="flex flex-col md:flex-row gap-3 w-full transition-all duration-500">
-            <div
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
               className={`video-div ${
                 isModalOpen ? "w-[90%] md:w-[70%]" : "w-full"
               } flex flex-col gap-2 transition-all duration-500`}
@@ -73,11 +85,11 @@ const ProgrammingAssignment = () => {
                 assignment_id={params.paId}
                 question={pa.title}
               />
-            </div>
+            </motion.div>
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

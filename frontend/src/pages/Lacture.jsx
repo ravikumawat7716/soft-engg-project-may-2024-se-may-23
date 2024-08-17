@@ -1,77 +1,130 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import LLmSelect from "../components/LLMSelect";
 import axios from "axios";
 import { ApiUrl } from "../config";
 import { useSelector } from "react-redux";
-import Loading from "../components/Loading";
-
+import { motion, AnimatePresence } from "framer-motion";
+import { Button, Tooltip, useToast } from "@chakra-ui/react";
+import { FaRobot, FaFileDownload, FaFileAlt } from "react-icons/fa";
+import { IoMdSend } from "react-icons/io";
 import jsPDF from "jspdf";
-import { Button } from "@chakra-ui/react";
 
 const Lecture = () => {
   const params = useParams();
-  const [isNotesLoading, setNotesIsLoading] = useState(false);
-  const [isSummeryLoading, setSummeryLoading] = useState(false);
-
-  const [count, setCount] = useState(0);
-  const [summery, setSummery] = useState(null);
-  const [loading, setLoading] = useState(false);
-
   const { currentUser } = useSelector((state) => state.auth);
-
-  const { courseId, lectureId } = useParams();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState("");
-  const textareaRef = useRef(null);
-
+  const [isNotesLoading, setNotesIsLoading] = useState(false);
+  const [isSummaryLoading, setSummaryLoading] = useState(false);
+  const [summery, setSummary] = useState(null);
   const [lecture, setLecture] = useState(null);
+  const [chatbot, setChatBot] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newMessage, setNewMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const textareaRef = useRef(null);
+  const scrollRef = useRef();
+  const toast = useToast();
 
-  const [chatbot, setChatBot] = useState(null);
-
-  // Clear chat_id on component mount to ensure it's null on every hard refresh
   useEffect(() => {
     localStorage.removeItem("chat_id");
-  }, []);
+    getLecture();
+  }, [params.lectureId]);
 
-  const chat_id = localStorage.getItem("chat_id"); // chat_id will be null after clearing
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatbot]);
 
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
+  const getLecture = async () => {
+    try {
+      const res = await axios(`${ApiUrl}/lecture/${params.lectureId}`);
+      setLecture(res.data);
+    } catch (error) {
+      console.error("Error fetching lecture:", error);
+      toast({
+        title: "Error fetching lecture",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const notesGenerate = async () => {
+    setNotesIsLoading(true);
+    try {
+      const res = await axios.post(`${ApiUrl}/notes_generator`, {
+        topic: lecture.title,
+        email: currentUser.email,
+      });
+      const doc = new jsPDF();
+      doc.text(res.data.result, 10, 10);
+      doc.save(`${lecture.title}.pdf`);
+      toast({
+        title: "Notes generated successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error("Error generating notes:", error);
+      toast({
+        title: "Error generating notes",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setNotesIsLoading(false);
+    }
+  };
+
+  const videoSummary = async () => {
+    setSummaryLoading(true);
+    try {
+      const res = await axios.post(`${ApiUrl}/video_summary`, {
+        link: `https://www.youtube.com/watch?v=${lecture.youtubeId}`,
+        email: currentUser.email,
+      });
+      setSummary(res.data.result);
+    } catch (error) {
+      console.error("Error generating summary:", error);
+      toast({
+        title: "Error generating summary",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setSummaryLoading(false);
+    }
   };
 
   const sendMessage = async (e) => {
     e.preventDefault();
+    if (newMessage.trim() === "") return;
+    
     setLoading(true);
-    if (newMessage.trim() !== "") {
-      setNewMessage("");
+    const updatedChatbot = [...chatbot, { role: "user", content: newMessage }];
+    setChatBot(updatedChatbot);
+    setNewMessage("");
 
-      const data = {
+    try {
+      const res = await axios.post(`${ApiUrl}/chatbot`, {
         chat: newMessage,
         email: currentUser.email,
-      };
-
-      if (chat_id !== null) {
-        data.chat_id = chat_id;
-      }
-
-      const res = await axios({
-        url: `${ApiUrl}/chatbot`,
-        method: "POST",
-        data: data,
-        headers: {
-          "Content-Type": "application/json",
-        },
+        chat_id: localStorage.getItem("chat_id") || null,
       });
-
-      console.log(res.data.chat);
       localStorage.setItem("chat_id", res.data._id);
-      setChatBot(res.data.chat);
+      setChatBot([...updatedChatbot, ...res.data.chat.slice(-1)]);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast({
+        title: "Error sending message",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
       setLoading(false);
-
-      adjustTextareaHeight();
-      setCount(count + 1);
     }
   };
 
@@ -86,181 +139,163 @@ const Lecture = () => {
     textarea.style.height = `${Math.min(textarea.scrollHeight, 120)}px`;
   };
 
-  const getLecture = async () => {
-    const res = await axios(`${ApiUrl}/lecture/${params.lectureId}`);
-    setLecture(res.data);
-  };
-
-  const notesGenerate = async () => {
-    setNotesIsLoading(true);
-    const data = {
-      topic: lecture.title,
-      email: currentUser.email,
-    };
-
-    const res = await axios({
-      url: `${ApiUrl}/notes_generator`,
-      method: "POST",
-      data: data,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const doc = new jsPDF();
-
-    doc.text(res.data.result, 10, 10);
-
-    doc.save(`${lecture.title}.pdf`);
-    setNotesIsLoading(false);
-  };
-
-  const videoSummery = async () => {
-    setSummeryLoading(true);
-    const data = {
-      link: `https://www.youtube.com/watch?v=${lecture.youtubeId}`,
-      email: currentUser.email,
-    };
-
-    const res = await axios({
-      url: `${ApiUrl}/video_summary`,
-      method: "POST",
-      data: data,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    setSummery(res.data.result);
-    setSummeryLoading(false);
-  };
-
-  useEffect(() => {
-    getLecture();
-  }, [params.lectureId]);
-
-  const scrollRef = useRef();
-
-  useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [count]);
-
   return (
-    <div className="ml-6 h-[80%] ">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="p-6 h-full bg-gray-100 rounded-lg shadow-lg"
+    >
       {lecture && (
-        <div className="flex mt-4 w-full justify-between">
-          <h1 className="font-semibold text-lg">{lecture.title}</h1>
-          <Button
-            className="mb-4 px-4 py-2 bg-red-700 text-white rounded-full text-sm transition-colors duration-300"
-            onClick={notesGenerate}
-            isLoading={isNotesLoading}
-          >
-            Create Notes with AI
-          </Button>
-          <button
-            onClick={toggleModal}
-            className="mb-4 px-4 py-2 text-sm bg-red-700 text-white rounded-full transition-colors duration-300"
-          >
-            AI Support
-          </button>
-        </div>
+        <motion.div
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="flex flex-col md:flex-row justify-between items-center mb-6"
+        >
+          <h1 className="font-bold text-2xl text-gray-800 mb-4 md:mb-0">{lecture.title}</h1>
+          <div className="flex space-x-4">
+            <Tooltip label="Generate Notes" placement="top">
+              <Button
+                leftIcon={<FaFileDownload />}
+                onClick={notesGenerate}
+                isLoading={isNotesLoading}
+                colorScheme="red"
+                variant="solid"
+              >
+                Create Notes
+              </Button>
+            </Tooltip>
+            <Tooltip label="AI Support" placement="top">
+              <Button
+                leftIcon={<FaRobot />}
+                onClick={() => setIsModalOpen(!isModalOpen)}
+                colorScheme="blue"
+                variant="outline"
+              >
+                AI Support
+              </Button>
+            </Tooltip>
+          </div>
+        </motion.div>
       )}
+      
       {lecture && (
-        <div className="flex flex-col h-full md:flex-row  gap-3 w-full transition-all duration-500">
-          <div
-            className={`video-div ${
-              isModalOpen ? "w-[90%] md:w-[60%]" : "w-full"
-            } flex flex-col gap-2 transition-all duration-500`}
+        <div className="flex flex-col md:flex-row gap-6">
+          <motion.div
+            layout
+            className={`video-div ${isModalOpen ? "w-full md:w-3/5" : "w-full"} 
+            bg-white rounded-lg shadow-md overflow-hidden transition-all duration-500 ease-in-out`}
           >
-            <div
-              className={`w-full ${
-                summery ? "h-[60%]" : "h-[90%]"
-              } border border-gray-400 rounded-md flex justify-center items-center`}
-            >
+            <div className="aspect-w-16 aspect-h-9" style={{ height: "500px" }}>
               <iframe
-                width="100%"
-                height="100%"
                 src={`https://www.youtube.com/embed/${lecture.youtubeId}`}
                 title="YouTube video player"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
-                className="rounded-md"
+                className="w-full h-full"
               ></iframe>
             </div>
-            <div className="transcript">
+            <div className="p-4">
               <Button
-                className="px-4 py-2 rounded-full text-white bg-red-700"
-                onClick={videoSummery}
-                isLoading={isSummeryLoading}
+                leftIcon={<FaFileAlt />}
+                onClick={videoSummary}
+                isLoading={isSummaryLoading}
+                colorScheme="green"
+                variant="solid"
+                className="mb-4"
               >
                 Video Summary
               </Button>
-              {summery && <h1 className="mt-4 font-semibold">{summery}</h1>}
+              <AnimatePresence>
+                {summery && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="mt-4 p-4 bg-gray-100 rounded-lg"
+                  >
+                    <h2 className="font-semibold text-lg mb-2">Summary:</h2>
+                    <p>{summery}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-          </div>
+          </motion.div>
 
-          <div
-            className={`chat-bot-div ${
-              isModalOpen ? "w-[90%] h-[600px] md:w-[40%]" : "hidden"
-            } border-2 border-gray-400 rounded-md h-[500px] flex flex-col transition-all duration-500`}
-          >
-            <div className="flex-1 p-4 overflow-y-auto">
-              {chatbot && chatbot.length > 0 ? (
-                chatbot.map((chat, index) => (
-                  <div key={index}>
-                    <div className="mb-2 flex flex-col gap-1">
-                      {chat.role === "user" && (
-                        <h1 className="font-semibold text-[16px]">
-                          User : {chat.content}
-                        </h1>
-                      )}
-                      {chat.role === "assistant" && (
-                        <h1 className="font-semibold text-[16px]">
-                          <span className="text-[18px]">🤖</span>:{" "}
-                          {chat.content}
-                        </h1>
-                      )}
-                    </div>
+          <AnimatePresence>
+            {isModalOpen && (
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                className="chat-bot-div w-full md:w-2/5 bg-white rounded-lg shadow-md overflow-hidden"
+              >
+                <div className="h-[500px] flex flex-col">
+                  <div className="flex-1 p-4 overflow-y-auto">
+                    {chatbot.length > 0 ? (
+                      chatbot.map((chat, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          className={`mb-4 ${
+                            chat.role === "user" ? "text-right" : "text-left"
+                          }`}
+                        >
+                          <div
+                            className={`inline-block p-3 rounded-lg ${
+                              chat.role === "user"
+                                ? "bg-blue-500 text-white"
+                                : "bg-gray-200 text-gray-800"
+                            }`}
+                          >
+                            {chat.content}
+                          </div>
+                        </motion.div>
+                      ))
+                    ) : (
+                      <div className="h-full flex items-center justify-center">
+                        <div className="text-center">
+                          <FaRobot className="text-6xl text-gray-400 mb-4 mx-auto" />
+                          <p className="text-xl font-semibold text-gray-600">
+                            Hi User, I'm your AI assistant. How can I help you?
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                    <div ref={scrollRef} />
                   </div>
-                ))
-              ) : (
-                <div className="h-full w-full flex items-center justify-center">
-                  <div className="flex flex-col gap-2">
-                    <span className="text-center text-4xl">
-                      <span className="icon-large">🤖</span>
-                    </span>
-                    <span className="font-semibold text-[18px]">
-                      Hi User, I am AI ChatBot. How can I help you?
-                    </span>
+                  <div className="p-4 border-t border-gray-200">
+                    <form onSubmit={sendMessage} className="flex items-center">
+                      <textarea
+                        value={newMessage}
+                        onChange={handleInputChange}
+                        onKeyPress={(e) => e.key === "Enter" && !e.shiftKey && sendMessage(e)}
+                        placeholder="Type your message..."
+                        className="flex-1 p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        rows="1"
+                        ref={textareaRef}
+                      />
+                      <Button
+                        type="submit"
+                        isLoading={loading}
+                        colorScheme="blue"
+                        className="rounded-r-md"
+                      >
+                        <IoMdSend />
+                      </Button>
+                    </form>
                   </div>
                 </div>
-              )}
-              <div ref={scrollRef}></div>
-            </div>
-            <div className="mb-2">{loading && <Loading />}</div>
-            <div className="p-4 border-t border-gray-300 flex">
-              <textarea
-                value={newMessage}
-                onChange={handleInputChange}
-                onKeyUp={(e) => e.key === "Enter" && sendMessage()}
-                placeholder="Type your query..."
-                className="flex-1 p-2 outline-none border px-4 py-2 text-sm font-semibold rounded-md resize-none overflow-hidden"
-                rows="1"
-                ref={textareaRef}
-              ></textarea>
-              <Button
-                onClick={sendMessage}
-                className="ml-2 px-4 py-2 text-white bg-red-700 rounded-md transition-colors duration-300"
-                isLoading={loading}
-              >
-                Go
-              </Button>
-            </div>
-          </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

@@ -34,8 +34,8 @@ const UserDashboard = () => {
         ]);
 
         setDocuments([
-          { id: 1, title: "Aadhar Card"},
-          { id: 2, title: "Grade Card"},
+          { id: 1, title: "Aadhar Card", downloadUrl: "/images.png" },
+          { id: 2, title: "Grade Card", downloadUrl: "/images(1).png" },
         ]);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -122,20 +122,34 @@ const UserDashboard = () => {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="space-y-4"
+            className="space-y-6"
           >
             {documents.map((document, index) => (
               <motion.div
                 key={index}
                 variants={itemVariants}
-                whileHover={{ scale: 1.02, boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)" }}
-                whileTap={{ scale: 0.98 }}
-                className="bg-white rounded-lg p-4 shadow-md cursor-pointer transition-all duration-300"
+                className="bg-white rounded-lg p-6 shadow-md transition-all duration-300"
               >
-                <a href={document.url} download className="flex items-center justify-between">
-                  <span className="font-medium text-indigo-600">{document.title}</span>
-                  <FiActivity className="text-gray-500" />
-                </a>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-lg text-gray-800">{document.title}</h3>
+                  <motion.a
+                    href={document.downloadUrl}
+                    download
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-indigo-600 text-white px-4 py-2 rounded-md flex items-center space-x-2 hover:bg-indigo-700 transition-colors"
+                  >
+                    <FiActivity />
+                    <span>Download</span>
+                  </motion.a>
+                </div>
+                {document.image && (
+                  <img 
+                    src={document.image} 
+                    alt={document.title} 
+                    className="w-full h-40 object-cover rounded-md mb-4"
+                  />
+                )}
               </motion.div>
             ))}
           </motion.div>

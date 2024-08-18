@@ -8,6 +8,25 @@ import { Button, Tooltip, useToast } from "@chakra-ui/react";
 import { FaRobot, FaFileDownload, FaFileAlt } from "react-icons/fa";
 import { IoMdSend } from "react-icons/io";
 import jsPDF from "jspdf";
+import markdownIt from "markdown-it";
+
+function indentText(text, indentString) {
+  const lines = text.split("\n");
+  const indentedLines = lines.map((line) => indentString + line);
+  return indentedLines.join("\n");
+}
+
+function toMarkdown(text) {
+  // Replace '•' with '*'
+  text = text.replace(/•/g, "*");
+  // Indent text
+  text = indentText(text, "> ");
+
+  // Initialize markdown-it
+  const md = markdownIt();
+  // Render markdown
+  return md.render(text);
+}
 
 const Lecture = () => {
   const params = useParams();
@@ -58,14 +77,25 @@ const Lecture = () => {
 
       const doc = new jsPDF();
       const margin = 10;
+      const pageHeight = doc.internal.pageSize.getHeight();
       const pageWidth = doc.internal.pageSize.getWidth();
       const maxLineWidth = pageWidth - margin * 2;
+      const lineHeight = 10; // Height of each line
 
       // Split text into lines that fit within the max width
       const lines = doc.splitTextToSize(res.data.result, maxLineWidth);
 
-      // Add the lines to the PDF
-      doc.text(lines, margin, margin);
+      let currentHeight = margin;
+
+      // Add each line to the PDF, adding a new page when necessary
+      lines.forEach((line) => {
+        if (currentHeight + lineHeight > pageHeight - margin) {
+          doc.addPage(); // Add a new page
+          currentHeight = margin; // Reset height for the new page
+        }
+        doc.text(line, margin, currentHeight);
+        currentHeight += lineHeight;
+      });
 
       doc.save(`${lecture.title}.pdf`);
 
@@ -87,7 +117,6 @@ const Lecture = () => {
       setNotesIsLoading(false);
     }
   };
-
   const videoSummary = async () => {
     setSummaryLoading(true);
     try {
@@ -95,7 +124,7 @@ const Lecture = () => {
         link: `https://www.youtube.com/watch?v=${lecture.youtubeId}`,
         email: currentUser.email,
       });
-      setSummary(res.data.result);
+      setSummary(toMarkdown(res.data.result));
     } catch (error) {
       console.error("Error generating summary:", error);
       toast({
@@ -233,7 +262,10 @@ const Lecture = () => {
                     className="mt-4 p-4 bg-gray-100 rounded-lg"
                   >
                     <h2 className="font-semibold text-lg mb-2">Summary:</h2>
-                    <p>{summery}</p>
+                    <div
+                      className="font-semibold mt-4 overflow-y-auto"
+                      dangerouslySetInnerHTML={{ __html: summery }}
+                    />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -267,9 +299,10 @@ const Lecture = () => {
                                 ? "bg-blue-500 text-white"
                                 : "bg-gray-200 text-gray-800"
                             }`}
-                          >
-                            {chat.content}
-                          </div>
+                            dangerouslySetInnerHTML={{
+                              __html: toMarkdown(chat.content),
+                            }}
+                          />
                         </motion.div>
                       ))
                     ) : (

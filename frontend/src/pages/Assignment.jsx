@@ -9,6 +9,26 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaRobot } from "react-icons/fa";
 import { IoMdSend } from "react-icons/io";
 
+import markdownIt from "markdown-it";
+
+function indentText(text, indentString) {
+  const lines = text.split("\n");
+  const indentedLines = lines.map((line) => indentString + line);
+  return indentedLines.join("\n");
+}
+
+function toMarkdown(text) {
+  // Replace '•' with '*'
+  text = text.replace(/•/g, "*");
+  // Indent text
+  text = indentText(text, "> ");
+
+  // Initialize markdown-it
+  const md = markdownIt();
+  // Render markdown
+  return md.render(text);
+}
+
 const Assignment = () => {
   const params = useParams();
   const { currentUser } = useSelector((state) => state.auth);
@@ -302,9 +322,10 @@ const Assignment = () => {
                               ? "bg-blue-500 text-white"
                               : "bg-gray-200 text-gray-800"
                           }`}
-                        >
-                          {chat.content}
-                        </div>
+                          dangerouslySetInnerHTML={{
+                            __html: toMarkdown(chat.content),
+                          }}
+                        />
                       </motion.div>
                     ))
                   ) : (
@@ -320,7 +341,10 @@ const Assignment = () => {
                   <div ref={scrollRef} />
                 </div>
                 <div className="p-4 border-t border-gray-200">
-                  <form onSubmit={sendMessage} className="flex items-center">
+                  <form
+                    onSubmit={sendMessage}
+                    className="flex items-center gap-4"
+                  >
                     <textarea
                       value={newMessage}
                       onChange={handleInputChange}

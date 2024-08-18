@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const InstructorPage = () => {
   const navigate = useNavigate();
@@ -41,6 +41,10 @@ const InstructorPage = () => {
           <div className="text-xl font-semibold text-gray-800">
             Welcome, Instructor
           </div>
+
+          <Link className="text-blue-500 font-[700] hover:scale-110" to="/">
+            User Dashboard
+          </Link>
           <div className="flex items-center space-x-4">
             <div className="text-gray-600">{currentUser.name}</div>
             <img
@@ -55,22 +59,48 @@ const InstructorPage = () => {
         <main className="flex-1 p-6 bg-gray-100">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { label: "Lectures", description: "Manage your lectures.", bgColor: "bg-blue-600", hoverBg: "bg-blue-700", path: "/create-lecture" },
-              { label: "Courses", description: "Manage your courses.", bgColor: "bg-purple-600", hoverBg: "bg-purple-700", path: "/create-course" },
-              { label: "Assignments", description: "Manage your assignments.", bgColor: "bg-yellow-500", hoverBg: "bg-yellow-600", path: "/create-assignment" },
-              { label: "Programming Assignments", description: "Manage programming tasks.", bgColor: "bg-green-600", hoverBg: "bg-green-700", path: "/create-pa" },
+              {
+                label: "Lectures",
+                description: "Manage your lectures.",
+                bgColor: "bg-blue-600",
+                hoverBg: "bg-blue-700",
+                path: "/create-lecture",
+              },
+              {
+                label: "Courses",
+                description: "Manage your courses.",
+                bgColor: "bg-purple-600",
+                hoverBg: "bg-purple-700",
+                path: "/create-course",
+              },
+              {
+                label: "Assignments",
+                description: "Manage your assignments.",
+                bgColor: "bg-yellow-500",
+                hoverBg: "bg-yellow-600",
+                path: "/create-assignment",
+              },
+              {
+                label: "Programming Assignments",
+                description: "Manage programming tasks.",
+                bgColor: "bg-green-600",
+                hoverBg: "bg-green-700",
+                path: "/create-pa",
+              },
             ].map((item, index) => (
               <div
                 key={index}
                 className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition duration-300 ease-in-out"
               >
-                <h2 className="text-lg font-semibold text-gray-800">{item.label}</h2>
+                <h2 className="text-lg font-semibold text-gray-800">
+                  {item.label}
+                </h2>
                 <p className="text-gray-600 mt-2">{item.description}</p>
                 <button
                   className={`mt-4 ${item.bgColor} text-white w-full py-2 rounded-md hover:${item.hoverBg} transition`}
                   onClick={() => navigate(item.path)}
                 >
-                  {`Add ${item.label.split(' ')[0]}`}
+                  {`Add ${item.label.split(" ")[0]}`}
                 </button>
               </div>
             ))}

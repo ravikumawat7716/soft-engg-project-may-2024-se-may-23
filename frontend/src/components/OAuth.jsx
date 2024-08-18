@@ -34,10 +34,14 @@ const OAuth = () => {
 
     await dispatch(googleSignIN(data))
       .then((res) => {
-        console.log(res);
+        console.log(res.payload);
         console.log(res.type);
+        if (res.payload.role === "instructor") {
+          navigate("/instructor");
+        } else {
+          navigate("/");
+        }
 
-        navigate("/");
         toast.success("Sign In Successfully");
       })
       .catch((error) => {

@@ -259,11 +259,11 @@ const Lecture = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
-                    className="mt-4 p-4 bg-gray-100 rounded-lg"
+                    className="mt-2 p-4 bg-gray-100 rounded-lg h-[200px] overflow-y-auto"
                   >
-                    <h2 className="font-semibold text-lg mb-2">Summary:</h2>
+                    <h2 className="font-semibold text-lg ">Summary:</h2>
                     <div
-                      className="font-semibold mt-4 overflow-y-auto"
+                      className="font-semibold mt-2"
                       dangerouslySetInnerHTML={{ __html: summery }}
                     />
                   </motion.div>

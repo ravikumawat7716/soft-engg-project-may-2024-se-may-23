@@ -1,6 +1,6 @@
 # AI Powered LMS
 
-<img src="https://raw.githubusercontent.com/ravikumawat7716/soft-engg-project-may-2024-se-may-23/main/frontend/public/SE%20Team%2023%20.jpg?token=GHSAT0AAAAAACWMK2EEDYU6VGHUSKBD2PSMZXHLOLQ">
+<img src="https://raw.githubusercontent.com/ravikumawat7716/soft-engg-project-may-2024-se-may-23/refs/heads/main/frontend/public/SE%20Team%2023%20.jpg">
 
 ## Local Project Setup
 

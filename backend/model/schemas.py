@@ -1,8 +1,8 @@
 student_schema = {
     "bsonType": "object",
-    "required": ["name","email", "roll_no", "profileURL"],
+    "required": ["name", "email", "roll_no", "profileURL"],
     "properties": {
-        "name": {"bsonType": "string", "description": "name of the user"},
+        "name": {"bsonType": "string", "description": "First name of the user"},
         "email": {"bsonType": "string", "description": "Email address of the user"},
         "roll_no": {"bsonType": "string", "description": "Roll number of the user"},
         "profileURL": {

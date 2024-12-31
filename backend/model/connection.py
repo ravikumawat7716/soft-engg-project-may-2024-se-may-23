@@ -14,8 +14,8 @@ import json
 # def mongoDB():
 
 # MongoDB connection details
-uri = "mongodb://localhost:27017/SE2"  # Replace with your MongoDB URI
-db_name = "SE2"  # Replace with your database name
+uri = "mongodb://localhost:27017/SE3"  # Replace with your MongoDB URI
+db_name = "SE3"  # Replace with your database name
 
 # Initialize MongoDB handler
 mongo_handler = MongoDBHandler(uri, db_name)

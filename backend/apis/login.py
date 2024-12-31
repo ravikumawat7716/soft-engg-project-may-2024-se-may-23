@@ -40,7 +40,7 @@ class UserLoginAPI(Resource):
                 "name": data["name"],
                 "email": data["email"],
                 "roll_no": data["roll_no"],
-                "photo": data["photo"],
+                "profileURL": data["photo"],
                 "login_logs": [],
                 "LLM_setting": {},
                 "role": "student",
